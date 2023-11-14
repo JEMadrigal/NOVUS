@@ -1,6 +1,6 @@
+import math
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 from queue import Queue, LifoQueue, PriorityQueue
 
 class InitialGraph:
@@ -9,9 +9,6 @@ class InitialGraph:
 
     def distance2D(p1, p2):
         return np.sqrt(np.sum((p1 - p2)**2))
-
-    def distance3D(punto1, punto2):
-        return np.linalg.norm(punto1 - punto2)
 
     def to3D(x, y, z):
         r = math.sqrt(x**2 + y**2 + z**2)
@@ -252,4 +249,3 @@ import numpy as np
 # Función para calcular la distancia euclidiana entre dos puntos 3D
 def distancia_euclidiana(punto1, punto2):
     return np.linalg.norm(punto1 - punto2)
-
