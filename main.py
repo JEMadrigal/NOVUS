@@ -6,37 +6,18 @@ from queue import Queue, LifoQueue, PriorityQueue
 class InitialGraph:
     def __init__(self):
         pass
-
-    def distance2D(p1, p2):
-        return np.sqrt(np.sum((p1 - p2)**2))
     
     def distance3D(punto1, punto2):
-        """
-        Calcula la distancia euclidiana entre dos puntos en el espacio tridimensional.
-
-        :param punto1: Tupla con las coordenadas (x, y, z) del primer punto.
-        :param punto2: Tupla con las coordenadas (x, y, z) del segundo punto.
-        :return: La distancia entre los dos puntos.
-        """
         x1, y1, z1 = punto1
         x2, y2, z2 = punto2
 
         distancia = math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
         return distancia
 
-    def to3D(x, y, z):
-        r = math.sqrt(x**2 + y**2 + z**2)
-        t = r / (r + z)
-        xPrima = t * x
-        yPrima = t * y
-        return xPrima, yPrima
-
-    def plot(adjacency_matrix):
+    def plot8(adjacency_matrix):
         channels = ['Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8']
 
-        points3D = np.array([[0, 0.71934, 0.694658], [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934, 0, 0.694658],
-                             [0, -0.71934, 0.694658], [-0.587427, -0.808524, -0.0348995], [0, -0.999391, -0.0348995],
-                             [0.587427, -0.808524, -0.0348995]])
+        points3D = np.array([[0, 0.71934, 0.694658], [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934, 0, 0.694658], [0, -0.71934, 0.694658], [-0.587427, -0.808524, -0.0348995], [0, -0.999391, -0.0348995], [0.587427, -0.808524, -0.0348995]])
 
         r = np.sqrt(points3D[:, 0]**2 + points3D[:, 1]**2 + points3D[:, 2]**2)
         t = r / (r + points3D[:, 2])
@@ -50,6 +31,33 @@ class InitialGraph:
 
         for i in range(len(points2D)):
             plt.text(points2D[i, 0] - 0.02, points2D[i, 1] + 0.025, channels[i])
+
+        for i in range(len(adjacency_matrix)):
+            for j in range(i + 1, len(adjacency_matrix[i])):
+                if adjacency_matrix[i, j] == 1:
+                    plt.plot([points2D[i, 0], points2D[j, 0]], [points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+
+        plt.axis('equal')
+        plt.show()
+
+    def plot32(adjacency_matrix):
+        channels = ['Fp1','Fp2', 'AF3', 'AF4', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7', 'P3', 'Pz', 'P4', 'P8', 'PO3', 'PO4', 'O1', 'Oz', 'O2']
+
+        points3D = [[-0.308829,0.950477,-0.0348995], [0.308829,0.950477,-0.0348995], [-0.406247,0.871199,0.275637], [0.406247,0.871199,0.275637], [-0.808524,0.587427,-0.0348995], [-0.545007,0.673028,0.5], [0,0.71934,0.694658], [0.545007,0.673028,0.5], [0.808524,0.587427,-0.0348995], [-0.887888,0.340828,0.309017], [-0.37471,0.37471,0.848048], [0.37471,0.37471,0.848048], [0.887888,0.340828,0.309017], [-0.999391,0,-0.0348995], [-0.71934,0,0.694658], [0,0,1], [0.71934,0,0.694658], [0.999391,0,-0.0348995], [-0.887888,-0.340828,0.309017], [-0.37471,-0.37471,0.848048], [0.37471,-0.37471, 0.848048], [0.887888,-0.340828,0.309017], [-0.808524,-0.587427,-0.0348995], [-0.545007,-0.673028,0.5], [0,-0.71934,0.694658], [0.545007,-0.673028,0.5], [0.808524,-0.587427,-0.0348995], [-0.406247,-0.871199,0.275637], [0.406247,-0.871199,0.275637], [-0.308829,-0.950477,-0.0348995], [0,-0.999391,-0.0348995], [0.308829,-0.950477,-0.0348995]]
+        points3D = np.array(points3D)
+
+        r = np.sqrt(points3D[:,0]**2 + points3D[:,1]**2 + points3D[:,2]**2)
+        t = r/(r + points3D[:,2])
+        x = r*points3D[:,0]
+        y = r*points3D[:,1]
+        points2D = np.column_stack((x,y))
+
+        circle = plt.Circle((0,0),1, color = 'r', alpha = 0.25, fill = False)
+        plt.scatter(points2D[:,0], points2D[:,1])
+        plt.gca().add_patch(circle)
+
+        for i in range(len(points2D)):
+            plt.text(points2D[i,0]-0.02, points2D[i,1]+0.025, channels[i])
 
         for i in range(len(adjacency_matrix)):
             for j in range(i + 1, len(adjacency_matrix[i])):
@@ -133,6 +141,9 @@ class TreeNode:
             path.insert(0, node.v)
             node = node.parent
         return path
+    
+    def __lt__(self, other):
+        return self.c < other.c
         
     def bfs(graph, v0, vg):
         if v0 not in graph.vertices():
@@ -182,7 +193,7 @@ class TreeNode:
                     frontier.put(TreeNode(node, vertex[0], vertex[1] + node.c))
                 explored_set.add(node.v)
 
-    def uniform_cost(graph:WeightedGraph, v0, vg):
+    def ucs(graph, v0, vg):
         if v0 not in graph.vertices():
             print("El vertice", v0, "no existe")
         if vg not in graph.vertices():
@@ -205,40 +216,46 @@ class TreeNode:
             explored_set[node.v] = 0
 
     def floyd_marshall(self, start_vertex, end_vertex):
-        n = len(self.vertices())
+        vertices = self.vertices()
+
+        if start_vertex not in vertices:
+            print(f"The start vertex {start_vertex} is not in the list of vertices.")
+            return None
+
+        n = len(vertices)
         distance = [[float('inf')] * n for _ in range(n)]
         next_node = [[-1] * n for _ in range(n)]
 
         for i in range(n):
             distance[i][i] = 0
-            for edge in self.adjacency_list[self.vertices()[i]]:
-                distance[i][self.vertices().index(edge[0])] = edge[1]
-                next_node[i][self.vertices().index(edge[0])] = self.vertices().index(edge[0])
+            for edge in self._adjacency_list[vertices[i]]:
+                distance[i][vertices.index(edge[0])] = edge[1]
+                next_node[i][vertices.index(edge[0])] = vertices.index(edge[0])
 
-        for k in range(n):
-            for i in range(n):
-                for j in range(n):
-                    if distance[i][k] != float('inf') and distance[k][j] != float('inf'):
-                        if distance[i][j] > distance[i][k] + distance[k][j]:
-                            distance[i][j] = distance[i][k] + distance[k][j]
-                            next_node[i][j] = next_node[i][k]
+        try:
+            end_index = vertices.index(end_vertex)
+        except ValueError:
+            print(f"The end vertex {end_vertex} is not in the list of vertices.")
+            return None
 
-        start_index = self.vertices().index(start_vertex)
-        end_index = self.vertices().index(end_vertex)
-        shortest_distance = distance[start_index][end_index]
+        shortest_distance = distance[vertices.index(start_vertex)][end_index]
 
         return shortest_distance
 
+
 def main():
-    matrizLectura = np.loadtxt('Lectura.txt')
-    matrizMemoria = np.loadtxt('Memoria.txt')
-    matrizOperaciones = np.loadtxt('Operaciones.txt')
+    '''
+        8 electrodos:
+    '''
+    matrizLectura = np.loadtxt('S3/Lectura.txt')
+    matrizMemoria = np.loadtxt('S3/Memoria.txt')
+    matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
 
-    InitialGraph.plot(matrizLectura)
-    #InitialGraph.plot(matrizMemoria)
-    #InitialGraph.plot(matrizOperaciones)
+    InitialGraph.plot8(matrizLectura)
+    #InitialGraph.plot8(matrizMemoria)
+    #InitialGraph.plot8(matrizOperaciones)
 
-    posiciones = {
+    posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
         'C3': (-0.71934, 0, 0.694658),
         'Cz': (0, 0, 1),
@@ -249,38 +266,229 @@ def main():
         'PO8': (0.587427, -0.808524, -0.0348995),
     }
 
-    posName = list(posiciones.keys())  
-    indice_a_clave = {str(indice): clave for indice, clave in enumerate(posiciones)}
+    posName8 = list(posiciones8.keys())  
+    ItoC8 = {str(indice): clave for indice, clave in enumerate(posiciones8)}
     
-    matrizPonderada = InitialGraph.toWeigthedMatriz(posiciones, matrizLectura)
-    graph = WeightedGraph(directed=True)
+    matrizPonderada8 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLectura)
+    graph8 = WeightedGraph(directed=True)
 
-    for i in range(len(matrizPonderada)):
-        graph.add_vertex(posName[i])
-        print(i)
+    for i in range(len(matrizPonderada8)):
+        for j in range(len(matrizPonderada8[i])):
+            if(matrizPonderada8[i][j] != 0):
+                graph8.add_vertex(posName8[i])
 
-    for i in range(len(matrizPonderada)):
-        for j in range(len(matrizPonderada[i])):
-            if(matrizPonderada[i][j] != 0):
-                graph.add_edge(indice_a_clave[str(i)], indice_a_clave[str(j)], matrizPonderada[i][j])
+    for i in range(len(matrizPonderada8)):
+        for j in range(len(matrizPonderada8[i])):
+            if(matrizPonderada8[i][j] != 0):
+                graph8.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
+
+
+    print('\n\n-----MATRIZ 8 ELECTRODOS-----\n\n')
+
 
     '''
         BFS:
     '''
-
+    print('\n---BFS---\n')
     #Fz - PO8
-    res = TreeNode.bfs(graph, 'Fz', 'PO8')
+    res = TreeNode.bfs(graph8, 'Fz', 'PO8')
     print(res)
-
-    graph.print_graph()
-
     #C3 - Oz
-    res = TreeNode.bfs(graph, 'C3', 'C4')
+    res = TreeNode.bfs(graph8, 'C3', 'Oz')
+    print(res)
+    #P07 - C4
+    res = TreeNode.bfs(graph8, 'P07', 'C4')
     print(res)
 
-    #P07 - C4
-    res = TreeNode.bfs(graph, 'P07', 'C4')
+    '''
+        DFS:
+    '''
+    print('\n---DFS---\n')
+    res = TreeNode.dfs(graph8, 'Fz', 'PO8')
     print(res)
+    #C3 - Oz
+    res = TreeNode.dfs(graph8, 'C3', 'Oz')
+    print(res)
+    #P07 - C4
+    res = TreeNode.dfs(graph8, 'P07', 'C4')
+    print(res)
+
+    '''
+        UCS:
+    '''
+    print('\n---UCS---\n')
+    #Fz - PO8
+    res = TreeNode.ucs(graph8, 'Fz', 'PO8')
+    print(res)
+    #C3 - Oz
+    res = TreeNode.ucs(graph8, 'C3', 'Oz')
+    print(res)
+    #P07 - C4
+    res = TreeNode.ucs(graph8, 'P07', 'C4')
+    print(res)
+
+    '''
+        Floyd - Marshall:
+    '''
+    print('\n---Floyd - Marshall---\n')
+    #Fz - PO8
+    res = TreeNode.floyd_marshall(graph8, 'Fz', 'PO8')
+    print(res)
+    #C3 - Oz
+    res = TreeNode.floyd_marshall(graph8, 'C3', 'Oz')
+    print(res)
+    #P07 - C4
+    res = TreeNode.floyd_marshall(graph8, 'P07', 'C4')
+    print(res)
+
+    '''
+        32 electrodos:
+    '''
+    
+    matrizLectura32A = np.loadtxt('S0A/Lectura.txt')
+    matrizMemoria32A = np.loadtxt('S0A/Memoria.txt')
+    matrizOperaciones32A = np.loadtxt('S0A/Operaciones.txt')
+
+    InitialGraph.plot32(matrizLectura32A)
+    #InitialGraph.plot32(matrizMemoria32A)
+    #InitialGraph.plot32(matrizOperaciones32A)
+
+    posiciones32 = {
+        'Fp1': (-0.308829, 0.950477, -0.0348995),
+        'Fp2': (0.308829, 0.950477, -0.0348995),
+        'AF3': (-0.406247, 0.871199, 0.275637),
+        'AF4': (0.406247, 0.871199, 0.275637),
+        'F7': (-0.808524, 0.587427, -0.0348995),
+        'F3': (-0.545007, 0.673028, 0.5),
+        'Fz': (0, 0.71934, 0.694658),
+        'F4': (0.545007, 0.673028, 0.5),
+        'F8': (0.808524, 0.587427, -0.0348995),
+        'FC5': (-0.887888, 0.340828, 0.309017),
+        'FC1': (-0.37471, 0.37471, 0.848048),
+        'FC2': (0.37471, 0.37471, 0.848048),
+        'FC6': (0.887888, 0.340828, 0.309017),
+        'T7': (-0.999391, 0, -0.0348995),
+        'C3': (-0.71934, 0, 0.694658),
+        'Cz': (0, 0, 1),
+        'C4': (0.71934, 0, 0.694658),
+        'T8': (0.999391, 0, -0.0348995),
+        'CP5': (-0.887888, -0.340828, 0.309017),
+        'CP1': (-0.37471, -0.37471, 0.848048),
+        'CP2': (0.37471, -0.37471, 0.848048),
+        'CP6': (0.887888, -0.340828, 0.309017),
+        'P7': (-0.808524, -0.587427, -0.0348995),
+        'P3': (-0.545007, -0.673028, 0.5),
+        'Pz': (0, -0.71934, 0.694658),
+        'P4': (0.545007, -0.673028, 0.5),
+        'P8': (0.808524, -0.587427, -0.0348995),
+        'PO3': (-0.406247, -0.871199, 0.275637),
+        'PO4': (0.406247, -0.871199, 0.275637),
+        'O1': (-0.308829, -0.950477, -0.0348995),
+        'Oz': (0, -0.999391, -0.0348995),
+        'O2': (0.308829, -0.950477, -0.0348995),
+    }
+
+    posName32 = list(posiciones32.keys())  
+    ItoC32 = {str(indice): clave for indice, clave in enumerate(posiciones32)}
+    
+    matrizPonderada32 = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32A)
+    graph32 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada32)):
+        for j in range(len(matrizPonderada32[i])):
+            if(matrizPonderada32[i][j] != 0):
+                graph32.add_vertex(posName32[i])
+
+    for i in range(len(matrizPonderada32)):
+        for j in range(len(matrizPonderada32[i])):
+            if(matrizPonderada32[i][j] != 0):
+                graph32.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32[i][j])
+
+
+    print('\n\n-----MATRIZ 32 ELECTRODOS-----\n\n')
+
+
+    '''
+        BFS:
+    '''
+    print('\n---BFS---\n')
+    #F7 - PO4
+    res = TreeNode.bfs(graph32, 'F7', 'PO4')
+    print(res)
+    #CP5 - O2
+    res = TreeNode.bfs(graph32, 'CP5', 'O2')
+    print(res)
+    #P4 - T7
+    res = TreeNode.bfs(graph32, 'P4', 'T7')
+    print(res)
+    #AF3 - CP6
+    res = TreeNode.bfs(graph32, 'AF3', 'CP6')
+    print(res)
+    #F8 - CP2
+    res = TreeNode.bfs(graph32, 'F8', 'CP2')
+    print(res)
+
+    '''
+        DFS:
+    '''
+    print('\n---DFS---\n')
+    #F7 - PO4
+    res = TreeNode.dfs(graph32, 'F7', 'PO4')
+    print(res)
+    #CP5 - O2
+    res = TreeNode.dfs(graph32, 'CP5', 'O2')
+    print(res)
+    #P4 - T7
+    res = TreeNode.dfs(graph32, 'P4', 'T7')
+    print(res)
+    #AF3 - CP6
+    res = TreeNode.dfs(graph32, 'AF3', 'CP6')
+    print(res)
+    #F8 - CP2
+    res = TreeNode.dfs(graph32, 'F8', 'CP2')
+    print(res)
+
+    '''
+        UCS:
+    '''
+    print('\n---UCS---\n')
+    #F7 - PO4
+    res = TreeNode.ucs(graph32, 'F7', 'PO4')
+    print(res)
+    #CP5 - O2
+    res = TreeNode.ucs(graph32, 'CP5', 'O2')
+    print(res)
+    #P4 - T7
+    res = TreeNode.ucs(graph32, 'P4', 'T7')
+    print(res)
+    #AF3 - CP6
+    res = TreeNode.ucs(graph32, 'AF3', 'CP6')
+    print(res)
+    #F8 - CP2
+    res = TreeNode.ucs(graph32, 'F8', 'CP2')
+    print(res)
+
+    '''
+        Floyd - Marshall:
+    '''
+    print('\n---Floyd - Marshall---\n')
+    #F7 - PO4
+    res = TreeNode.floyd_marshall(graph32, 'F7', 'PO4')
+    print(res)
+    #CP5 - O2
+    res = TreeNode.floyd_marshall(graph32, 'CP5', 'O2')
+    print(res)
+    #P4 - T7
+    res = TreeNode.floyd_marshall(graph32, 'P4', 'T7')
+    print(res)
+    #AF3 - CP6
+    res = TreeNode.floyd_marshall(graph32, 'AF3', 'CP6')
+    print(res)
+    #F8 - CP2
+    res = TreeNode.floyd_marshall(graph32, 'F8', 'CP2')
+    print(res)
+
+    print('\n')
 
 if __name__ == "__main__":
     main()
