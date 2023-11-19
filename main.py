@@ -532,7 +532,6 @@ def main():
     print(res)
 
     print('\n')
-
     # Parte 3----------------------------------------------------------------------------------------
     # graph8.print_graph()
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8.prim()
@@ -543,6 +542,7 @@ def main():
     prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
     print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+
 
 
 if __name__ == "__main__":
