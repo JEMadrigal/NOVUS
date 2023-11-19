@@ -299,8 +299,8 @@ def main():
     matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
 
     InitialGraph.plot8(matrizLectura)
-    # InitialGraph.plot8(matrizMemoria)
-    # InitialGraph.plot8(matrizOperaciones)
+    #InitialGraph.plot8(matrizMemoria)
+    #InitialGraph.plot8(matrizOperaciones)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
