@@ -15,12 +15,12 @@ class InitialGraph:
         distancia = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
         return distancia
 
-    def plot8(adjacency_matrix):
+    def plot8(adjacency_matrix, ax):
         channels = ['Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8']
 
         points3D = np.array([[0, 0.71934, 0.694658], [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934, 0, 0.694658],
-                             [0, -0.71934, 0.694658], [-0.587427, -0.808524, -0.0348995], [0, -0.999391, -0.0348995],
-                             [0.587427, -0.808524, -0.0348995]])
+                            [0, -0.71934, 0.694658], [-0.587427, -0.808524, -0.0348995], [0, -0.999391, -0.0348995],
+                            [0.587427, -0.808524, -0.0348995]])
 
         r = np.sqrt(points3D[:, 0] ** 2 + points3D[:, 1] ** 2 + points3D[:, 2] ** 2)
         t = r / (r + points3D[:, 2])
@@ -29,19 +29,18 @@ class InitialGraph:
         points2D = np.column_stack((x, y))
 
         circle = plt.Circle((0, 0), 1, color='r', alpha=0.25, fill=False)
-        plt.scatter(points2D[:, 0], points2D[:, 1])
-        plt.gca().add_patch(circle)
+        ax.scatter(points2D[:, 0], points2D[:, 1])
+        ax.add_patch(circle)
 
         for i in range(len(points2D)):
-            plt.text(points2D[i, 0] - 0.02, points2D[i, 1] + 0.025, channels[i])
+            ax.text(points2D[i, 0] - 0.02, points2D[i, 1] + 0.025, channels[i])
 
         for i in range(len(adjacency_matrix)):
             for j in range(i + 1, len(adjacency_matrix[i])):
                 if adjacency_matrix[i, j] == 1:
-                    plt.plot([points2D[i, 0], points2D[j, 0]], [points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                    ax.plot([points2D[i, 0], points2D[j, 0]], [points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
 
-        plt.axis('equal')
-        plt.show()
+        ax.axis('equal')
 
     def plot32(adjacency_matrix):
         channels = ['Fp1', 'Fp2', 'AF3', 'AF4', 'F7', 'F3', 'Fz', 'F4', 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3',
@@ -298,9 +297,17 @@ def main():
     matrizMemoria = np.loadtxt('S3/Memoria.txt')
     matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
 
-    InitialGraph.plot8(matrizLectura)
-    #InitialGraph.plot8(matrizMemoria)
-    #InitialGraph.plot8(matrizOperaciones)
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+    axs[0].set_title('Lecture')
+    axs[1].set_title('Memory')
+    axs[2].set_title('Math operations')
+
+    InitialGraph.plot8(matrizLectura, axs[0])
+    InitialGraph.plot8(matrizMemoria, axs[1])
+    InitialGraph.plot8(matrizOperaciones, axs[2])
+
+    plt.show()
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
