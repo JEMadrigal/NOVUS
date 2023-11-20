@@ -2,6 +2,27 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from queue import Queue, LifoQueue, PriorityQueue
+import networkx as nx
+
+
+class DisjointSet:
+    def __init__(self, vertices):
+        self.parent = {vertex: vertex for vertex in vertices}
+
+    def find(self, vertex):
+        if self.parent[vertex] == vertex:
+            return vertex
+        self.parent[vertex] = self.find(self.parent[vertex])  # Path compression
+        return self.parent[vertex]
+
+    def union(self, vertex1, vertex2):
+        root1 = self.find(vertex1)
+        root2 = self.find(vertex2)
+        if root1 != root2:
+            self.parent[root1] = root2
+
+    def are_connected(self, vertex1, vertex2):
+        return self.find(vertex1) == self.find(vertex2)
 
 
 class InitialGraph:
@@ -112,6 +133,14 @@ class WeightedGraph:
     def vertices(self):
         return list(self._adjacency_list.keys())  # Cambiar el nombre de la variable
 
+    def edges(self):
+        e = []
+        for v in self._adjacency_list:
+            for edge in self._adjacency_list[v]:
+                if (edge[0], v, edge[1]) not in e:
+                    e.append((v, edge[0], edge[1]))
+        return e
+
     def number_of_vertices(self):
         return len(self._adjacency_list)
 
@@ -141,6 +170,26 @@ class WeightedGraph:
         return self._adjacency_list[v]
 
     # Prims algorithm for part 3-----------------------------------------------------------------
+    def kruskal(self):
+        selected_edges = []
+        min_spanning_tree_cost = 0
+
+        # Sort the edges by weight
+        edges = self.edges()
+        edges.sort(key=lambda x: x[2])
+
+        # Initialize disjoint-set data structure
+        disjoint_set = DisjointSet(self.vertices())
+
+        for edge in edges:
+            v1, v2, cost = edge
+            if not disjoint_set.are_connected(v1, v2):
+                selected_edges.append(edge)
+                min_spanning_tree_cost += cost
+                disjoint_set.union(v1, v2)
+
+        return selected_edges, min_spanning_tree_cost
+
     def prim(self):
         selected_vertices = []
         min_spanning_tree_cost = 0
@@ -290,6 +339,66 @@ class TreeNode:
         return shortest_distance
 
 
+def plotMinSpanningTree(graph, kruskal_selected_edges):
+    idAndNameOfVertices = []
+    vertices = graph.vertices()
+
+    for i in range(len(vertices)):
+        newTuple = (i, vertices[i])
+        idAndNameOfVertices.append(newTuple)
+
+    # Create graph
+    G = nx.Graph()
+    for i in range(len(idAndNameOfVertices)):
+        G.add_node(idAndNameOfVertices[i][0], label=idAndNameOfVertices[i][1])
+
+    # Create edges
+    for i in range(len(kruskal_selected_edges)):
+        nameOfStatingVertex = kruskal_selected_edges[i][0]
+        nameOfEndingVertex = kruskal_selected_edges[i][1]
+        weight = round(kruskal_selected_edges[i][2], 2)
+        startingVertexId = 0
+        endingVertexId = 0
+
+        for k in range(len(idAndNameOfVertices)):
+            if nameOfStatingVertex == idAndNameOfVertices[k][1]:
+                startingVertexId = idAndNameOfVertices[k][0]
+
+            if nameOfEndingVertex == idAndNameOfVertices[k][1]:
+                endingVertexId = idAndNameOfVertices[k][0]
+
+        G.add_edge(startingVertexId, endingVertexId, weight=weight)
+
+        # Set node positions
+    pos = nx.spring_layout(G)
+
+    # Draw nodes and labels
+    nx.draw_networkx_nodes(G, pos)
+    nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, 'label'))
+
+    # Draw edges with weights
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw_networkx_edges(G, pos)
+
+    # Show graph
+    plt.axis('off')
+    plt.show()
+    """
+      # Add nodes
+      G.add_node(1, label='A')
+      G.add_node(2, label='B')
+      G.add_node(3, label='C')
+      G.add_node(4, label='D')
+
+      # Add edges
+      G.add_edge(1, 2)
+      G.add_edge(2, 3)
+      G.add_edge(3, 1)
+      G.add_edge(1, 4)
+      """
+
+
 def main():
     '''
         8 electrodos:
@@ -299,8 +408,8 @@ def main():
     matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
 
     InitialGraph.plot8(matrizLectura)
-    #InitialGraph.plot8(matrizMemoria)
-    #InitialGraph.plot8(matrizOperaciones)
+    # InitialGraph.plot8(matrizMemoria)
+    # InitialGraph.plot8(matrizOperaciones)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
@@ -535,14 +644,27 @@ def main():
     # Parte 3----------------------------------------------------------------------------------------
     # graph8.print_graph()
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8.kruskal()
+
     print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
     print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8, kruskal_selected_edges)
+
     # graph32.print_graph()
     prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32.kruskal()
+
     print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
-
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32, kruskal_selected_edges)
 
 
 if __name__ == "__main__":
