@@ -4,6 +4,17 @@ import matplotlib.pyplot as plt
 from queue import Queue, LifoQueue, PriorityQueue
 import networkx as nx
 
+#NOMBRES GRAFOS:
+
+#8 ELECTRODOS:
+    #graph8_3
+    #graph8_4
+    #graph8_5
+    #graph8_6
+
+#32 ELECTRODOS:
+    #graph32A
+    #graph32B
 
 class DisjointSet:
     def __init__(self, vertices):
@@ -479,50 +490,96 @@ def main():
     posName8 = list(posiciones8.keys())
     ItoC8 = {str(indice): clave for indice, clave in enumerate(posiciones8)}
 
-    matrizPonderada8 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto3)
+    #GRAFO S3
+    matrizPonderada8_3 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto3)
 
-    graph8 = WeightedGraph(directed=True)
+    graph8_3 = WeightedGraph(directed=True)
 
-    for i in range(len(matrizPonderada8)):
-        for j in range(len(matrizPonderada8[i])):
-            if (matrizPonderada8[i][j] != 0):
-                graph8.add_vertex(posName8[i])
+    for i in range(len(matrizPonderada8_3)):
+        for j in range(len(matrizPonderada8_3[i])):
+            if (matrizPonderada8_3[i][j] != 0):
+                graph8_3.add_vertex(posName8[i])
 
-    for i in range(len(matrizPonderada8)):
-        for j in range(len(matrizPonderada8[i])):
-            if (matrizPonderada8[i][j] != 0):
-                graph8.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
+    for i in range(len(matrizPonderada8_3)):
+        for j in range(len(matrizPonderada8_3[i])):
+            if (matrizPonderada8_3[i][j] != 0):
+                graph8_3.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_3[i][j])
+
+    #GRAFO S4
+    matrizPonderada8_4 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto4)
+
+    graph8_4 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_4)):
+        for j in range(len(matrizPonderada8_4[i])):
+            if (matrizPonderada8_4[i][j] != 0):
+                graph8_4.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_4)):
+        for j in range(len(matrizPonderada8_4[i])):
+            if (matrizPonderada8_4[i][j] != 0):
+                graph8_4.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_4[i][j])
+
+    #GRAFO S5
+    matrizPonderada8_5 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto5)
+
+    graph8_5 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_5)):
+        for j in range(len(matrizPonderada8_5[i])):
+            if (matrizPonderada8_5[i][j] != 0):
+                graph8_5.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_5)):
+        for j in range(len(matrizPonderada8_5[i])):
+            if (matrizPonderada8_5[i][j] != 0):
+                graph8_5.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_5[i][j])
+
+    #GRAFO S6
+    matrizPonderada8_6 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto6)
+
+    graph8_6 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_6)):
+        for j in range(len(matrizPonderada8_6[i])):
+            if (matrizPonderada8_6[i][j] != 0):
+                graph8_6.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_6)):
+        for j in range(len(matrizPonderada8_6[i])):
+            if (matrizPonderada8_6[i][j] != 0):
+                graph8_6.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_6[i][j])
 
     print('\n\n-----MATRIZ 8 ELECTRODOS-----\n\n')
-    # graphPaths(graph8, 'Fz', 'PO8')
-    # graphPaths(graph8, 'C3', 'Oz')
-    # graphPaths(graph8, 'P07', 'C4')
+    # graphPaths(graph8_4, 'Fz', 'PO8')
+    # graphPaths(graph8_4, 'C3', 'Oz')
+    # graphPaths(graph8_4, 'P07', 'C4')
 
     '''
         BFS:
     '''
     print('\n---BFS---\n')
     # Fz - PO8
-    res = TreeNode.bfs(graph8, 'Fz', 'PO8')
+    res = TreeNode.bfs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.bfs(graph8, 'C3', 'Oz')
+    res = TreeNode.bfs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.bfs(graph8, 'P07', 'C4')
+    res = TreeNode.bfs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
         DFS:
     '''
     print('\n---DFS---\n')
-    res = TreeNode.dfs(graph8, 'Fz', 'PO8')
+    res = TreeNode.dfs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.dfs(graph8, 'C3', 'Oz')
+    res = TreeNode.dfs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.dfs(graph8, 'P07', 'C4')
+    res = TreeNode.dfs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -530,13 +587,13 @@ def main():
     '''
     print('\n---UCS---\n')
     # Fz - PO8
-    res = TreeNode.ucs(graph8, 'Fz', 'PO8')
+    res = TreeNode.ucs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.ucs(graph8, 'C3', 'Oz')
+    res = TreeNode.ucs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.ucs(graph8, 'P07', 'C4')
+    res = TreeNode.ucs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -544,13 +601,13 @@ def main():
     '''
     print('\n---Floyd - Marshall---\n')
     # Fz - PO8
-    res = TreeNode.floyd_marshall(graph8, 'Fz', 'PO8')
+    res = TreeNode.floyd_marshall(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.floyd_marshall(graph8, 'C3', 'Oz')
+    res = TreeNode.floyd_marshall(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.floyd_marshall(graph8, 'P07', 'C4')
+    res = TreeNode.floyd_marshall(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -606,18 +663,33 @@ def main():
     posName32 = list(posiciones32.keys())
     ItoC32 = {str(indice): clave for indice, clave in enumerate(posiciones32)}
 
-    matrizPonderada32 = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32A)
-    graph32 = WeightedGraph(directed=True)
+    #Matriz S0A
+    matrizPonderada32A = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32A)
+    graph32A = WeightedGraph(directed=True)
 
-    for i in range(len(matrizPonderada32)):
-        for j in range(len(matrizPonderada32[i])):
-            if (matrizPonderada32[i][j] != 0):
-                graph32.add_vertex(posName32[i])
+    for i in range(len(matrizPonderada32A)):
+        for j in range(len(matrizPonderada32A[i])):
+            if (matrizPonderada32A[i][j] != 0):
+                graph32A.add_vertex(posName32[i])
 
-    for i in range(len(matrizPonderada32)):
-        for j in range(len(matrizPonderada32[i])):
-            if (matrizPonderada32[i][j] != 0):
-                graph32.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32[i][j])
+    for i in range(len(matrizPonderada32A)):
+        for j in range(len(matrizPonderada32A[i])):
+            if (matrizPonderada32A[i][j] != 0):
+                graph32A.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32A[i][j])
+
+    #Matriz S0B
+    matrizPonderada32B = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32B)
+    graph32B = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada32B)):
+        for j in range(len(matrizPonderada32B[i])):
+            if (matrizPonderada32B[i][j] != 0):
+                graph32B.add_vertex(posName32[i])
+
+    for i in range(len(matrizPonderada32B)):
+        for j in range(len(matrizPonderada32B[i])):
+            if (matrizPonderada32B[i][j] != 0):
+                graph32B.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32B[i][j])
 
     print('\n\n-----MATRIZ 32 ELECTRODOS-----\n\n')
 
@@ -626,19 +698,19 @@ def main():
     '''
     print('\n---BFS---\n')
     # F7 - PO4
-    res = TreeNode.bfs(graph32, 'F7', 'PO4')
+    res = TreeNode.bfs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.bfs(graph32, 'CP5', 'O2')
+    res = TreeNode.bfs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.bfs(graph32, 'P4', 'T7')
+    res = TreeNode.bfs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.bfs(graph32, 'AF3', 'CP6')
+    res = TreeNode.bfs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.bfs(graph32, 'F8', 'CP2')
+    res = TreeNode.bfs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -646,19 +718,19 @@ def main():
     '''
     print('\n---DFS---\n')
     # F7 - PO4
-    res = TreeNode.dfs(graph32, 'F7', 'PO4')
+    res = TreeNode.dfs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.dfs(graph32, 'CP5', 'O2')
+    res = TreeNode.dfs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.dfs(graph32, 'P4', 'T7')
+    res = TreeNode.dfs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.dfs(graph32, 'AF3', 'CP6')
+    res = TreeNode.dfs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.dfs(graph32, 'F8', 'CP2')
+    res = TreeNode.dfs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -666,19 +738,19 @@ def main():
     '''
     print('\n---UCS---\n')
     # F7 - PO4
-    res = TreeNode.ucs(graph32, 'F7', 'PO4')
+    res = TreeNode.ucs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.ucs(graph32, 'CP5', 'O2')
+    res = TreeNode.ucs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.ucs(graph32, 'P4', 'T7')
+    res = TreeNode.ucs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.ucs(graph32, 'AF3', 'CP6')
+    res = TreeNode.ucs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.ucs(graph32, 'F8', 'CP2')
+    res = TreeNode.ucs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -686,26 +758,26 @@ def main():
     '''
     print('\n---Floyd - Marshall---\n')
     # F7 - PO4
-    res = TreeNode.floyd_marshall(graph32, 'F7', 'PO4')
+    res = TreeNode.floyd_marshall(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.floyd_marshall(graph32, 'CP5', 'O2')
+    res = TreeNode.floyd_marshall(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.floyd_marshall(graph32, 'P4', 'T7')
+    res = TreeNode.floyd_marshall(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.floyd_marshall(graph32, 'AF3', 'CP6')
+    res = TreeNode.floyd_marshall(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.floyd_marshall(graph32, 'F8', 'CP2')
+    res = TreeNode.floyd_marshall(graph32A, 'F8', 'CP2')
     print(res)
 
     print('\n')
     # Parte 3----------------------------------------------------------------------------------------
-    # graph8.print_graph()
-    prim_selected_vertices, prim_min_spanning_tree_cost = graph8.prim()
-    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8.kruskal()
+    # graph8_4.print_graph()
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_4.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_4.kruskal()
 
     # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
@@ -713,11 +785,11 @@ def main():
     print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
     print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
     print("\n")
-    plotMinSpanningTree(graph8, kruskal_selected_edges)
+    plotMinSpanningTree(graph8_4, kruskal_selected_edges)
 
-    # graph32.print_graph()
-    prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
-    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32.kruskal()
+    # graph32A.print_graph()
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32A.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32A.kruskal()
 
     # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
@@ -725,7 +797,7 @@ def main():
     print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
     print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
     print("\n")
-    plotMinSpanningTree(graph32, kruskal_selected_edges)
+    plotMinSpanningTree(graph32A, kruskal_selected_edges)
 
 
 if __name__ == "__main__":
