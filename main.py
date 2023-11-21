@@ -2,7 +2,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from queue import Queue, LifoQueue, PriorityQueue
-
+from scipy.spatial import Voronoi, voronoi_plot_2d
+from matplotlib.colors import Normalize
+from matplotlib import cm
 
 class InitialGraph:
     def __init__(self):
@@ -15,18 +17,61 @@ class InitialGraph:
         distancia = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
         return distancia
 
+
+    def calculate_angle(v1, v2):
+        dot_product = np.dot(v1, v2)
+        norm_v1 = np.linalg.norm(v1)
+        norm_v2 = np.linalg.norm(v2)
+        cos_theta = dot_product / (norm_v1 * norm_v2)
+        angle_rad = np.arccos(np.clip(cos_theta, -1.0, 1.0))
+        angle_deg = np.degrees(angle_rad)
+        return angle_deg
+
+    def plot_voronoi(points2D, adjacency_matrix):
+        vor = Voronoi(points2D)
+        num_edges = np.sum(adjacency_matrix, axis=1)
+
+        # Colormap based on the number of edges
+        norm = Normalize(vmin=min(num_edges), vmax=max(num_edges))
+        cmap = cm.ScalarMappable(norm=norm, cmap=cm.plasma)
+
+        fig, ax = plt.subplots()
+
+        voronoi_plot_2d(vor, show_vertices=False, line_colors='k', line_alpha=0.5, ax=ax)
+
+        for region, color in zip(vor.regions, num_edges):
+            if -1 not in region and len(region) > 2:
+                polygon = [vor.vertices[i] for i in region]
+                poly = plt.Polygon(polygon, facecolor=cmap.to_rgba(color), edgecolor='k', alpha=0.7)
+                ax.add_patch(poly)
+
+        # Circumcircles for the corresponding region
+        for i, color in enumerate(num_edges):
+            plt.scatter(vor.vertices[i, 0], vor.vertices[i, 1], c=[cmap.to_rgba(color)], edgecolors='k', s=50, zorder=10)
+
+        plt.colorbar(cmap, label='Number of Edges')
+        plt.xlim(min(points2D[:, 0]) - 1, max(points2D[:, 0]) + 1)
+        plt.ylim(min(points2D[:, 1]) - 1, max(points2D[:, 1]) + 1)
+        plt.title('Voronoi Diagram with Edge Count Colors')
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        plt.show()
+
     def plot8(adjacency_matrix):
         channels = ['Fz', 'C3', 'Cz', 'C4', 'Pz', 'PO7', 'Oz', 'PO8']
 
         points3D = np.array([[0, 0.71934, 0.694658], [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934, 0, 0.694658],
-                             [0, -0.71934, 0.694658], [-0.587427, -0.808524, -0.0348995], [0, -0.999391, -0.0348995],
+                             [0, -0.71934, 0.694658], [-0.587427, -0.808524, - 0.0348995], [0, -0.999391, -0.0348995],
                              [0.587427, -0.808524, -0.0348995]])
 
-        r = np.sqrt(points3D[:, 0] ** 2 + points3D[:, 1] ** 2 + points3D[:, 2] ** 2)
+        r = np.sqrt(points3D[:, 0] ** 2 + points3D[:, 1]
+                    ** 2 + points3D[:, 2] ** 2)
         t = r / (r + points3D[:, 2])
         x = r * points3D[:, 0]
         y = r * points3D[:, 1]
         points2D = np.column_stack((x, y))
+        
+        InitialGraph.plot_voronoi(points2D, adjacency_matrix)
 
         circle = plt.Circle((0, 0), 1, color='r', alpha=0.25, fill=False)
         plt.scatter(points2D[:, 0], points2D[:, 1])
@@ -38,7 +83,14 @@ class InitialGraph:
         for i in range(len(adjacency_matrix)):
             for j in range(i + 1, len(adjacency_matrix[i])):
                 if adjacency_matrix[i, j] == 1:
-                    plt.plot([points2D[i, 0], points2D[j, 0]], [points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                    plt.plot([points2D[i, 0], points2D[j, 0]], [
+                             points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+
+                    vector1 = points2D[j] - points2D[i]
+                    vector2 = np.array([1, 0])
+                    angle = InitialGraph.calculate_angle(vector1, vector2)
+                    print(
+                        f"Angle between {channels[i]} and {channels[j]}: {angle:.2f} degrees")
 
         plt.axis('equal')
         plt.show()
@@ -49,35 +101,53 @@ class InitialGraph:
                     'Oz', 'O2']
 
         points3D = [[-0.308829, 0.950477, -0.0348995], [0.308829, 0.950477, -0.0348995],
-                    [-0.406247, 0.871199, 0.275637], [0.406247, 0.871199, 0.275637], [-0.808524, 0.587427, -0.0348995],
-                    [-0.545007, 0.673028, 0.5], [0, 0.71934, 0.694658], [0.545007, 0.673028, 0.5],
-                    [0.808524, 0.587427, -0.0348995], [-0.887888, 0.340828, 0.309017], [-0.37471, 0.37471, 0.848048],
-                    [0.37471, 0.37471, 0.848048], [0.887888, 0.340828, 0.309017], [-0.999391, 0, -0.0348995],
-                    [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934, 0, 0.694658], [0.999391, 0, -0.0348995],
-                    [-0.887888, -0.340828, 0.309017], [-0.37471, -0.37471, 0.848048], [0.37471, -0.37471, 0.848048],
-                    [0.887888, -0.340828, 0.309017], [-0.808524, -0.587427, -0.0348995], [-0.545007, -0.673028, 0.5],
-                    [0, -0.71934, 0.694658], [0.545007, -0.673028, 0.5], [0.808524, -0.587427, -0.0348995],
+                    [-0.406247, 0.871199, 0.275637], [0.406247, 0.871199,
+                                                      0.275637], [-0.808524, 0.587427, -0.0348995],
+                    [-0.545007, 0.673028, 0.5], [0, 0.71934,
+                                                 0.694658], [0.545007, 0.673028, 0.5],
+                    [0.808524, 0.587427, -0.0348995], [-0.887888,
+                                                       0.340828, 0.309017], [-0.37471, 0.37471, 0.848048],
+                    [0.37471, 0.37471, 0.848048], [0.887888, 0.340828,
+                                                   0.309017], [-0.999391, 0, -0.0348995],
+                    [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934,
+                                                         0, 0.694658], [0.999391, 0, -0.0348995],
+                    [-0.887888, -0.340828, 0.309017], [-0.37471, -
+                                                       0.37471, 0.848048], [0.37471, -0.37471, 0.848048],
+                    [0.887888, -0.340828, 0.309017], [-0.808524, -
+                                                      0.587427, -0.0348995], [-0.545007, -0.673028, 0.5],
+                    [0, -0.71934, 0.694658], [0.545007, -0.673028,
+                                              0.5], [0.808524, -0.587427, -0.0348995],
                     [-0.406247, -0.871199, 0.275637], [0.406247, -0.871199, 0.275637],
                     [-0.308829, -0.950477, -0.0348995], [0, -0.999391, -0.0348995], [0.308829, -0.950477, -0.0348995]]
         points3D = np.array(points3D)
 
-        r = np.sqrt(points3D[:, 0] ** 2 + points3D[:, 1] ** 2 + points3D[:, 2] ** 2)
+        r = np.sqrt(points3D[:, 0] ** 2 + points3D[:, 1]
+                    ** 2 + points3D[:, 2] ** 2)
         t = r / (r + points3D[:, 2])
         x = r * points3D[:, 0]
         y = r * points3D[:, 1]
         points2D = np.column_stack((x, y))
+        InitialGraph.plot_voronoi(points2D, adjacency_matrix)
 
         circle = plt.Circle((0, 0), 1, color='r', alpha=0.25, fill=False)
         plt.scatter(points2D[:, 0], points2D[:, 1])
         plt.gca().add_patch(circle)
 
         for i in range(len(points2D)):
-            plt.text(points2D[i, 0] - 0.02, points2D[i, 1] + 0.025, channels[i])
+            plt.text(points2D[i, 0] - 0.02,
+                     points2D[i, 1] + 0.025, channels[i])
 
         for i in range(len(adjacency_matrix)):
             for j in range(i + 1, len(adjacency_matrix[i])):
                 if adjacency_matrix[i, j] == 1:
-                    plt.plot([points2D[i, 0], points2D[j, 0]], [points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                    plt.plot([points2D[i, 0], points2D[j, 0]], [
+                             points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                    
+                    vector1 = points2D[j] - points2D[i]
+                    vector2 = np.array([1, 0])
+                    angle = InitialGraph.calculate_angle(vector1, vector2)
+                    print(
+                        f"Angle between {channels[i]} and {channels[j]}: {angle:.2f} degrees")
 
         plt.axis('equal')
         plt.show()
@@ -92,7 +162,8 @@ class InitialGraph:
                 electrode2 = electrodes[j]
 
                 if connectivity_matrix[i][j] == 1:
-                    distance = InitialGraph.distance3D(posiciones[electrode1], posiciones[electrode2])
+                    distance = InitialGraph.distance3D(
+                        posiciones[electrode1], posiciones[electrode2])
                     weighted_graph[i][j] = distance
                     weighted_graph[j][i] = distance
 
@@ -110,7 +181,8 @@ class WeightedGraph:
         self._adjacency_list = {}  # Cambiar el nombre de la variable
 
     def vertices(self):
-        return list(self._adjacency_list.keys())  # Cambiar el nombre de la variable
+        # Cambiar el nombre de la variable
+        return list(self._adjacency_list.keys())
 
     def number_of_vertices(self):
         return len(self._adjacency_list)
@@ -259,14 +331,16 @@ class TreeNode:
                 adjacent_vertices = graph.adjacent_vertices(node.v)
                 for vertex in adjacent_vertices:
                     cost = vertex[1] + node.c
-                    frontier.put((cost, TreeNode(node, vertex[0], vertex[1] + node.c)))
+                    frontier.put(
+                        (cost, TreeNode(node, vertex[0], vertex[1] + node.c)))
             explored_set[node.v] = 0
 
     def floyd_marshall(self, start_vertex, end_vertex):
         vertices = self.vertices()
 
         if start_vertex not in vertices:
-            print(f"The start vertex {start_vertex} is not in the list of vertices.")
+            print(
+                f"The start vertex {start_vertex} is not in the list of vertices.")
             return None
 
         n = len(vertices)
@@ -282,7 +356,8 @@ class TreeNode:
         try:
             end_index = vertices.index(end_vertex)
         except ValueError:
-            print(f"The end vertex {end_vertex} is not in the list of vertices.")
+            print(
+                f"The end vertex {end_vertex} is not in the list of vertices.")
             return None
 
         shortest_distance = distance[vertices.index(start_vertex)][end_index]
@@ -299,8 +374,8 @@ def main():
     matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
 
     InitialGraph.plot8(matrizLectura)
-    #InitialGraph.plot8(matrizMemoria)
-    #InitialGraph.plot8(matrizOperaciones)
+    # InitialGraph.plot8(matrizMemoria)
+    # InitialGraph.plot8(matrizOperaciones)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
@@ -316,7 +391,8 @@ def main():
     posName8 = list(posiciones8.keys())
     ItoC8 = {str(indice): clave for indice, clave in enumerate(posiciones8)}
 
-    matrizPonderada8 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLectura)
+    matrizPonderada8 = InitialGraph.toWeigthedMatriz(
+        posiciones8, matrizLectura)
     graph8 = WeightedGraph(directed=True)
 
     for i in range(len(matrizPonderada8)):
@@ -327,7 +403,8 @@ def main():
     for i in range(len(matrizPonderada8)):
         for j in range(len(matrizPonderada8[i])):
             if (matrizPonderada8[i][j] != 0):
-                graph8.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
+                graph8.add_edge(
+                    ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
 
     print('\n\n-----MATRIZ 8 ELECTRODOS-----\n\n')
 
@@ -390,9 +467,9 @@ def main():
         32 electrodos:
     '''
 
-    matrizLectura32A = np.loadtxt('S0A/Lectura.txt')
-    matrizMemoria32A = np.loadtxt('S0A/Memoria.txt')
-    matrizOperaciones32A = np.loadtxt('S0A/Operaciones.txt')
+    matrizLectura32A = np.loadtxt('S0B/Lectura.txt')
+    matrizMemoria32A = np.loadtxt('S0B/Memoria.txt')
+    matrizOperaciones32A = np.loadtxt('S0B/Operaciones.txt')
 
     InitialGraph.plot32(matrizLectura32A)
     # InitialGraph.plot32(matrizMemoria32A)
@@ -436,7 +513,8 @@ def main():
     posName32 = list(posiciones32.keys())
     ItoC32 = {str(indice): clave for indice, clave in enumerate(posiciones32)}
 
-    matrizPonderada32 = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32A)
+    matrizPonderada32 = InitialGraph.toWeigthedMatriz(
+        posiciones32, matrizLectura32A)
     graph32 = WeightedGraph(directed=True)
 
     for i in range(len(matrizPonderada32)):
@@ -447,7 +525,8 @@ def main():
     for i in range(len(matrizPonderada32)):
         for j in range(len(matrizPonderada32[i])):
             if (matrizPonderada32[i][j] != 0):
-                graph32.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32[i][j])
+                graph32.add_edge(
+                    ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32[i][j])
 
     print('\n\n-----MATRIZ 32 ELECTRODOS-----\n\n')
 
@@ -542,7 +621,6 @@ def main():
     prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
     print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
-
 
 
 if __name__ == "__main__":
