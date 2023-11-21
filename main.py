@@ -172,6 +172,75 @@ class WeightedGraph:
             for edges in self._adjacency_list[vertex]:
                 print(vertex, " -> ", edges[0], " edge weight: ", edges[1])
 
+    def prim_edges(self):
+        selected_edges = []
+        selected_vertices = set()
+        min_spanning_tree_cost = 0
+
+        # Inicia con un vértice arbitrario (puedes elegir cualquier vértice)
+        start_vertex = list(self._adjacency_list.keys())[0]
+        selected_vertices.add(start_vertex)
+
+        while len(selected_vertices) < self.number_of_vertices():
+            min_cost = float('inf')
+            next_edge = None
+
+            for v in selected_vertices:
+                for neighbor, cost in self._adjacency_list[v]:
+                    if neighbor not in selected_vertices and cost < min_cost:
+                        min_cost = cost
+                        next_edge = (v, neighbor)
+
+            if next_edge is None:
+                # No se encontró solución
+                return None, None
+
+            selected_vertices.add(next_edge[1])
+            selected_edges.append(next_edge)
+            min_spanning_tree_cost += min_cost
+
+        return selected_edges, min_spanning_tree_cost
+
+
+def graham_scan(points):
+    def orientation(p, q, r):
+        val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+        if val == 0:
+            return 0
+        return 1 if val > 0 else 2
+
+    def graham_compare(p1, p2):
+        o = orientation(p0, p1, p2)
+        if o == 0:
+            return -1 if distance3D(p0, p2) >= distance3D(p0, p1) else 1
+        return -1 if o == 2 else 1
+
+    def distance3D(punto1, punto2):
+        x1, y1, z1 = punto1
+        x2, y2, z2 = punto2
+        return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
+
+    n = len(points)
+    if n < 3:
+        return []
+
+    p0 = min(points, key=lambda point: (point[2], point[1]))
+    sorted_points = sorted(points, key=lambda point: (math.atan2(point[1] - p0[1], point[0] - p0[0])))
+    stack = [p0, sorted_points[0], sorted_points[1]]
+    i = 2
+
+    while i < n:
+        top = stack[-1]
+        next_point = sorted_points[i]
+
+        # Elimina puntos no necesarios del casco convexo.
+        while len(stack) > 1 and orientation(stack[-2], top, next_point) != 2:
+            stack.pop()
+
+        stack.append(next_point)
+        i += 1
+
+    return stack
 
 class TreeNode:
     def __init__(self, parent, v, c):
@@ -551,6 +620,42 @@ def main():
     print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
     print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
 
+
+    # Part 4 ------------------------------------------
+    # Convex hull
+    prim_edges, _ = graph8.prim_edges()
+
+    unique_points = set()
+    for edge in prim_edges:
+        unique_points.add(edge[0])
+        unique_points.add(edge[1])
+    unique_points = list(unique_points)
+
+    points_3d = [posiciones8[point] for point in unique_points]
+
+    convex_hull = graham_scan(points_3d)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    for point in points_3d:
+        ax.scatter(point[0], point[1], point[2], c='blue', marker='o')
+
+    # edges of the minimum spanning tree.
+    for edge in prim_edges:
+        start_point = posiciones8[edge[0]]
+        end_point = posiciones8[edge[1]]
+        ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], [start_point[2], end_point[2]], c='green', linestyle='--')
+
+    convex_hull.append(convex_hull[0])  # Para cerrar el casco convexo.
+    convex_hull_points = np.array(convex_hull)
+    ax.plot(convex_hull_points[:, 0], convex_hull_points[:, 1], convex_hull_points[:, 2], c='red', linestyle='-', linewidth=2)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    plt.show()
 
 if __name__ == "__main__":
     main()
