@@ -399,17 +399,66 @@ def plotMinSpanningTree(graph, kruskal_selected_edges):
       """
 
 
+def plotMatrices(matrizLectura, matrizMemoria, matrizOperaciones):
+    InitialGraph.plot8(matrizLectura)
+    InitialGraph.plot8(matrizMemoria)
+    InitialGraph.plot8(matrizOperaciones)
+
+
+def graphPaths(graph, initialVertex, finalVertex):
+    '''
+            BFS:
+        '''
+    print('\n---BFS---\n')
+    # Fz - PO8
+    res = TreeNode.bfs(graph, initialVertex, finalVertex)
+    print(res)
+
+    '''
+        DFS:
+    '''
+    print('\n---DFS---\n')
+    res = TreeNode.dfs(graph, initialVertex, finalVertex)
+    print(res)
+    '''
+        UCS:
+    '''
+    print('\n---UCS---\n')
+    res = TreeNode.ucs(graph, initialVertex, finalVertex)
+    print(res)
+
+    '''
+        Floyd - Marshall:
+    '''
+    print('\n---Floyd - Marshall---\n')
+    res = TreeNode.floyd_marshall(graph, initialVertex, finalVertex)
+    print(res)
+
+
 def main():
     '''
         8 electrodos:
     '''
-    matrizLectura = np.loadtxt('S3/Lectura.txt')
-    matrizMemoria = np.loadtxt('S3/Memoria.txt')
-    matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
+    matrizLecturaSujeto3 = np.loadtxt('S3/Lectura.txt')
+    matrizMemoriaSujeto3 = np.loadtxt('S3/Memoria.txt')
+    matrizOperacionesSujeto3 = np.loadtxt('S3/Operaciones.txt')
 
-    InitialGraph.plot8(matrizLectura)
-    # InitialGraph.plot8(matrizMemoria)
-    # InitialGraph.plot8(matrizOperaciones)
+    matrizLecturaSujeto4 = np.loadtxt('S4/Lectura.txt')
+    matrizMemoriaSujeto4 = np.loadtxt('S4/Memoria.txt')
+    matrizOperacionesSujeto4 = np.loadtxt('S4/Operaciones.txt')
+
+    matrizLecturaSujeto5 = np.loadtxt('S5/Lectura.txt')
+    matrizMemoriaSujeto5 = np.loadtxt('S5/Memoria.txt')
+    matrizOperacionesSujeto5 = np.loadtxt('S5/Operaciones.txt')
+
+    matrizLecturaSujeto6 = np.loadtxt('S6/Lectura.txt')
+    matrizMemoriaSujeto6 = np.loadtxt('S6/Memoria.txt')
+    matrizOperacionesSujeto6 = np.loadtxt('S6/Operaciones.txt')
+
+    plotMatrices(matrizLecturaSujeto3, matrizMemoriaSujeto3, matrizOperacionesSujeto3)
+    plotMatrices(matrizLecturaSujeto4, matrizMemoriaSujeto4, matrizOperacionesSujeto4)
+    plotMatrices(matrizLecturaSujeto5, matrizMemoriaSujeto5, matrizOperacionesSujeto5)
+    plotMatrices(matrizLecturaSujeto6, matrizMemoriaSujeto6, matrizOperacionesSujeto6)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
@@ -425,7 +474,8 @@ def main():
     posName8 = list(posiciones8.keys())
     ItoC8 = {str(indice): clave for indice, clave in enumerate(posiciones8)}
 
-    matrizPonderada8 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLectura)
+    matrizPonderada8 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto3)
+
     graph8 = WeightedGraph(directed=True)
 
     for i in range(len(matrizPonderada8)):
@@ -439,6 +489,9 @@ def main():
                 graph8.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
 
     print('\n\n-----MATRIZ 8 ELECTRODOS-----\n\n')
+    # graphPaths(graph8, 'Fz', 'PO8')
+    # graphPaths(graph8, 'C3', 'Oz')
+    # graphPaths(graph8, 'P07', 'C4')
 
     '''
         BFS:
@@ -646,8 +699,8 @@ def main():
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8.kruskal()
 
-    print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
-    print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
     print("\n")
     print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
     print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
@@ -658,8 +711,8 @@ def main():
     prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32.kruskal()
 
-    print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
-    print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
     print("\n")
     print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
     print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
