@@ -5,6 +5,39 @@ from queue import Queue, LifoQueue, PriorityQueue
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from matplotlib.colors import Normalize
 from matplotlib import cm
+import networkx as nx
+
+#NOMBRES GRAFOS:
+
+#8 ELECTRODOS:
+    #graph8_3
+    #graph8_4
+    #graph8_5
+    #graph8_6
+
+#32 ELECTRODOS:
+    #graph32A
+    #graph32B
+
+class DisjointSet:
+    def __init__(self, vertices):
+        self.parent = {vertex: vertex for vertex in vertices}
+
+    def find(self, vertex):
+        if self.parent[vertex] == vertex:
+            return vertex
+        self.parent[vertex] = self.find(self.parent[vertex])  # Path compression
+        return self.parent[vertex]
+
+    def union(self, vertex1, vertex2):
+        root1 = self.find(vertex1)
+        root2 = self.find(vertex2)
+        if root1 != root2:
+            self.parent[root1] = root2
+
+    def are_connected(self, vertex1, vertex2):
+        return self.find(vertex1) == self.find(vertex2)
+
 
 class InitialGraph:
     def __init__(self):
@@ -184,6 +217,14 @@ class WeightedGraph:
         # Cambiar el nombre de la variable
         return list(self._adjacency_list.keys())
 
+    def edges(self):
+        e = []
+        for v in self._adjacency_list:
+            for edge in self._adjacency_list[v]:
+                if (edge[0], v, edge[1]) not in e:
+                    e.append((v, edge[0], edge[1]))
+        return e
+
     def number_of_vertices(self):
         return len(self._adjacency_list)
 
@@ -213,6 +254,26 @@ class WeightedGraph:
         return self._adjacency_list[v]
 
     # Prims algorithm for part 3-----------------------------------------------------------------
+    def kruskal(self):
+        selected_edges = []
+        min_spanning_tree_cost = 0
+
+        # Sort the edges by weight
+        edges = self.edges()
+        edges.sort(key=lambda x: x[2])
+
+        # Initialize disjoint-set data structure
+        disjoint_set = DisjointSet(self.vertices())
+
+        for edge in edges:
+            v1, v2, cost = edge
+            if not disjoint_set.are_connected(v1, v2):
+                selected_edges.append(edge)
+                min_spanning_tree_cost += cost
+                disjoint_set.union(v1, v2)
+
+        return selected_edges, min_spanning_tree_cost
+
     def prim(self):
         selected_vertices = []
         min_spanning_tree_cost = 0
@@ -365,17 +426,131 @@ class TreeNode:
         return shortest_distance
 
 
+def plotMinSpanningTree(graph, kruskal_selected_edges):
+    idAndNameOfVertices = []
+    vertices = graph.vertices()
+
+    for i in range(len(vertices)):
+        newTuple = (i, vertices[i])
+        idAndNameOfVertices.append(newTuple)
+
+    # Create graph
+    G = nx.Graph()
+    for i in range(len(idAndNameOfVertices)):
+        G.add_node(idAndNameOfVertices[i][0], label=idAndNameOfVertices[i][1])
+
+    # Create edges
+    for i in range(len(kruskal_selected_edges)):
+        nameOfStatingVertex = kruskal_selected_edges[i][0]
+        nameOfEndingVertex = kruskal_selected_edges[i][1]
+        weight = round(kruskal_selected_edges[i][2], 2)
+        startingVertexId = 0
+        endingVertexId = 0
+
+        for k in range(len(idAndNameOfVertices)):
+            if nameOfStatingVertex == idAndNameOfVertices[k][1]:
+                startingVertexId = idAndNameOfVertices[k][0]
+
+            if nameOfEndingVertex == idAndNameOfVertices[k][1]:
+                endingVertexId = idAndNameOfVertices[k][0]
+
+        G.add_edge(startingVertexId, endingVertexId, weight=weight)
+
+        # Set node positions
+    pos = nx.spring_layout(G)
+
+    # Draw nodes and labels
+    nx.draw_networkx_nodes(G, pos)
+    nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, 'label'))
+
+    # Draw edges with weights
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw_networkx_edges(G, pos)
+
+    # Show graph
+    plt.axis('off')
+    plt.show()
+    """
+      # Add nodes
+      G.add_node(1, label='A')
+      G.add_node(2, label='B')
+      G.add_node(3, label='C')
+      G.add_node(4, label='D')
+
+      # Add edges
+      G.add_edge(1, 2)
+      G.add_edge(2, 3)
+      G.add_edge(3, 1)
+      G.add_edge(1, 4)
+      """
+
+
+def plotMatrices8(matrizLectura, matrizMemoria, matrizOperaciones):
+    InitialGraph.plot8(matrizLectura)
+    InitialGraph.plot8(matrizMemoria)
+    InitialGraph.plot8(matrizOperaciones)
+
+def plotMatrices32(matrizLectura, matrizMemoria, matrizOperaciones):
+    InitialGraph.plot32(matrizLectura)
+    InitialGraph.plot32(matrizMemoria)
+    InitialGraph.plot32(matrizOperaciones)
+
+
+def graphPaths(graph, initialVertex, finalVertex):
+    '''
+            BFS:
+        '''
+    print('\n---BFS---\n')
+    # Fz - PO8
+    res = TreeNode.bfs(graph, initialVertex, finalVertex)
+    print(res)
+
+    '''
+        DFS:
+    '''
+    print('\n---DFS---\n')
+    res = TreeNode.dfs(graph, initialVertex, finalVertex)
+    print(res)
+    '''
+        UCS:
+    '''
+    print('\n---UCS---\n')
+    res = TreeNode.ucs(graph, initialVertex, finalVertex)
+    print(res)
+
+    '''
+        Floyd - Marshall:
+    '''
+    print('\n---Floyd - Marshall---\n')
+    res = TreeNode.floyd_marshall(graph, initialVertex, finalVertex)
+    print(res)
+
+
 def main():
     '''
         8 electrodos:
     '''
-    matrizLectura = np.loadtxt('S3/Lectura.txt')
-    matrizMemoria = np.loadtxt('S3/Memoria.txt')
-    matrizOperaciones = np.loadtxt('S3/Operaciones.txt')
+    matrizLecturaSujeto3 = np.loadtxt('S3/Lectura.txt')
+    matrizMemoriaSujeto3 = np.loadtxt('S3/Memoria.txt')
+    matrizOperacionesSujeto3 = np.loadtxt('S3/Operaciones.txt')
 
-    InitialGraph.plot8(matrizLectura)
-    # InitialGraph.plot8(matrizMemoria)
-    # InitialGraph.plot8(matrizOperaciones)
+    matrizLecturaSujeto4 = np.loadtxt('S4/Lectura.txt')
+    matrizMemoriaSujeto4 = np.loadtxt('S4/Memoria.txt')
+    matrizOperacionesSujeto4 = np.loadtxt('S4/Operaciones.txt')
+
+    matrizLecturaSujeto5 = np.loadtxt('S5/Lectura.txt')
+    matrizMemoriaSujeto5 = np.loadtxt('S5/Memoria.txt')
+    matrizOperacionesSujeto5 = np.loadtxt('S5/Operaciones.txt')
+
+    matrizLecturaSujeto6 = np.loadtxt('S6/Lectura.txt')
+    matrizMemoriaSujeto6 = np.loadtxt('S6/Memoria.txt')
+    matrizOperacionesSujeto6 = np.loadtxt('S6/Operaciones.txt')
+
+    plotMatrices8(matrizLecturaSujeto3, matrizMemoriaSujeto3, matrizOperacionesSujeto3)
+    plotMatrices8(matrizLecturaSujeto4, matrizMemoriaSujeto4, matrizOperacionesSujeto4)
+    plotMatrices8(matrizLecturaSujeto5, matrizMemoriaSujeto5, matrizOperacionesSujeto5)
+    plotMatrices8(matrizLecturaSujeto6, matrizMemoriaSujeto6, matrizOperacionesSujeto6)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
@@ -391,48 +566,96 @@ def main():
     posName8 = list(posiciones8.keys())
     ItoC8 = {str(indice): clave for indice, clave in enumerate(posiciones8)}
 
-    matrizPonderada8 = InitialGraph.toWeigthedMatriz(
-        posiciones8, matrizLectura)
-    graph8 = WeightedGraph(directed=True)
+    #GRAFO S3
+    matrizPonderada8_3 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto3)
 
-    for i in range(len(matrizPonderada8)):
-        for j in range(len(matrizPonderada8[i])):
-            if (matrizPonderada8[i][j] != 0):
-                graph8.add_vertex(posName8[i])
+    graph8_3 = WeightedGraph(directed=True)
 
-    for i in range(len(matrizPonderada8)):
-        for j in range(len(matrizPonderada8[i])):
-            if (matrizPonderada8[i][j] != 0):
-                graph8.add_edge(
-                    ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8[i][j])
+    for i in range(len(matrizPonderada8_3)):
+        for j in range(len(matrizPonderada8_3[i])):
+            if (matrizPonderada8_3[i][j] != 0):
+                graph8_3.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_3)):
+        for j in range(len(matrizPonderada8_3[i])):
+            if (matrizPonderada8_3[i][j] != 0):
+                graph8_3.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_3[i][j])
+
+    #GRAFO S4
+    matrizPonderada8_4 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto4)
+
+    graph8_4 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_4)):
+        for j in range(len(matrizPonderada8_4[i])):
+            if (matrizPonderada8_4[i][j] != 0):
+                graph8_4.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_4)):
+        for j in range(len(matrizPonderada8_4[i])):
+            if (matrizPonderada8_4[i][j] != 0):
+                graph8_4.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_4[i][j])
+
+    #GRAFO S5
+    matrizPonderada8_5 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto5)
+
+    graph8_5 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_5)):
+        for j in range(len(matrizPonderada8_5[i])):
+            if (matrizPonderada8_5[i][j] != 0):
+                graph8_5.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_5)):
+        for j in range(len(matrizPonderada8_5[i])):
+            if (matrizPonderada8_5[i][j] != 0):
+                graph8_5.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_5[i][j])
+
+    #GRAFO S6
+    matrizPonderada8_6 = InitialGraph.toWeigthedMatriz(posiciones8, matrizLecturaSujeto6)
+
+    graph8_6 = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada8_6)):
+        for j in range(len(matrizPonderada8_6[i])):
+            if (matrizPonderada8_6[i][j] != 0):
+                graph8_6.add_vertex(posName8[i])
+
+    for i in range(len(matrizPonderada8_6)):
+        for j in range(len(matrizPonderada8_6[i])):
+            if (matrizPonderada8_6[i][j] != 0):
+                graph8_6.add_edge(ItoC8[str(i)], ItoC8[str(j)], matrizPonderada8_6[i][j])
 
     print('\n\n-----MATRIZ 8 ELECTRODOS-----\n\n')
+    # graphPaths(graph8_4, 'Fz', 'PO8')
+    # graphPaths(graph8_4, 'C3', 'Oz')
+    # graphPaths(graph8_4, 'P07', 'C4')
 
     '''
         BFS:
     '''
     print('\n---BFS---\n')
     # Fz - PO8
-    res = TreeNode.bfs(graph8, 'Fz', 'PO8')
+    res = TreeNode.bfs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.bfs(graph8, 'C3', 'Oz')
+    res = TreeNode.bfs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.bfs(graph8, 'P07', 'C4')
+    res = TreeNode.bfs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
         DFS:
     '''
     print('\n---DFS---\n')
-    res = TreeNode.dfs(graph8, 'Fz', 'PO8')
+    res = TreeNode.dfs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.dfs(graph8, 'C3', 'Oz')
+    res = TreeNode.dfs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.dfs(graph8, 'P07', 'C4')
+    res = TreeNode.dfs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -440,13 +663,13 @@ def main():
     '''
     print('\n---UCS---\n')
     # Fz - PO8
-    res = TreeNode.ucs(graph8, 'Fz', 'PO8')
+    res = TreeNode.ucs(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.ucs(graph8, 'C3', 'Oz')
+    res = TreeNode.ucs(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.ucs(graph8, 'P07', 'C4')
+    res = TreeNode.ucs(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -454,13 +677,13 @@ def main():
     '''
     print('\n---Floyd - Marshall---\n')
     # Fz - PO8
-    res = TreeNode.floyd_marshall(graph8, 'Fz', 'PO8')
+    res = TreeNode.floyd_marshall(graph8_4, 'Fz', 'PO8')
     print(res)
     # C3 - Oz
-    res = TreeNode.floyd_marshall(graph8, 'C3', 'Oz')
+    res = TreeNode.floyd_marshall(graph8_4, 'C3', 'Oz')
     print(res)
     # P07 - C4
-    res = TreeNode.floyd_marshall(graph8, 'P07', 'C4')
+    res = TreeNode.floyd_marshall(graph8_4, 'P07', 'C4')
     print(res)
 
     '''
@@ -471,9 +694,12 @@ def main():
     matrizMemoria32A = np.loadtxt('S0B/Memoria.txt')
     matrizOperaciones32A = np.loadtxt('S0B/Operaciones.txt')
 
-    InitialGraph.plot32(matrizLectura32A)
-    # InitialGraph.plot32(matrizMemoria32A)
-    # InitialGraph.plot32(matrizOperaciones32A)
+    matrizLectura32B = np.loadtxt('S0B/Lectura.txt')
+    matrizMemoria32B = np.loadtxt('S0B/Memoria.txt')
+    matrizOperaciones32B = np.loadtxt('S0B/Operaciones.txt')
+
+    plotMatrices32(matrizLectura32A, matrizMemoria32A, matrizOperaciones32A)
+    plotMatrices32(matrizLectura32B, matrizMemoria32B, matrizOperaciones32B)
 
     posiciones32 = {
         'Fp1': (-0.308829, 0.950477, -0.0348995),
@@ -513,20 +739,33 @@ def main():
     posName32 = list(posiciones32.keys())
     ItoC32 = {str(indice): clave for indice, clave in enumerate(posiciones32)}
 
-    matrizPonderada32 = InitialGraph.toWeigthedMatriz(
-        posiciones32, matrizLectura32A)
-    graph32 = WeightedGraph(directed=True)
+    #Matriz S0A
+    matrizPonderada32A = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32A)
+    graph32A = WeightedGraph(directed=True)
 
-    for i in range(len(matrizPonderada32)):
-        for j in range(len(matrizPonderada32[i])):
-            if (matrizPonderada32[i][j] != 0):
-                graph32.add_vertex(posName32[i])
+    for i in range(len(matrizPonderada32A)):
+        for j in range(len(matrizPonderada32A[i])):
+            if (matrizPonderada32A[i][j] != 0):
+                graph32A.add_vertex(posName32[i])
 
-    for i in range(len(matrizPonderada32)):
-        for j in range(len(matrizPonderada32[i])):
-            if (matrizPonderada32[i][j] != 0):
-                graph32.add_edge(
-                    ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32[i][j])
+    for i in range(len(matrizPonderada32A)):
+        for j in range(len(matrizPonderada32A[i])):
+            if (matrizPonderada32A[i][j] != 0):
+                graph32A.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32A[i][j])
+
+    #Matriz S0B
+    matrizPonderada32B = InitialGraph.toWeigthedMatriz(posiciones32, matrizLectura32B)
+    graph32B = WeightedGraph(directed=True)
+
+    for i in range(len(matrizPonderada32B)):
+        for j in range(len(matrizPonderada32B[i])):
+            if (matrizPonderada32B[i][j] != 0):
+                graph32B.add_vertex(posName32[i])
+
+    for i in range(len(matrizPonderada32B)):
+        for j in range(len(matrizPonderada32B[i])):
+            if (matrizPonderada32B[i][j] != 0):
+                graph32B.add_edge(ItoC32[str(i)], ItoC32[str(j)], matrizPonderada32B[i][j])
 
     print('\n\n-----MATRIZ 32 ELECTRODOS-----\n\n')
 
@@ -535,19 +774,19 @@ def main():
     '''
     print('\n---BFS---\n')
     # F7 - PO4
-    res = TreeNode.bfs(graph32, 'F7', 'PO4')
+    res = TreeNode.bfs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.bfs(graph32, 'CP5', 'O2')
+    res = TreeNode.bfs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.bfs(graph32, 'P4', 'T7')
+    res = TreeNode.bfs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.bfs(graph32, 'AF3', 'CP6')
+    res = TreeNode.bfs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.bfs(graph32, 'F8', 'CP2')
+    res = TreeNode.bfs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -555,19 +794,19 @@ def main():
     '''
     print('\n---DFS---\n')
     # F7 - PO4
-    res = TreeNode.dfs(graph32, 'F7', 'PO4')
+    res = TreeNode.dfs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.dfs(graph32, 'CP5', 'O2')
+    res = TreeNode.dfs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.dfs(graph32, 'P4', 'T7')
+    res = TreeNode.dfs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.dfs(graph32, 'AF3', 'CP6')
+    res = TreeNode.dfs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.dfs(graph32, 'F8', 'CP2')
+    res = TreeNode.dfs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -575,19 +814,19 @@ def main():
     '''
     print('\n---UCS---\n')
     # F7 - PO4
-    res = TreeNode.ucs(graph32, 'F7', 'PO4')
+    res = TreeNode.ucs(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.ucs(graph32, 'CP5', 'O2')
+    res = TreeNode.ucs(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.ucs(graph32, 'P4', 'T7')
+    res = TreeNode.ucs(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.ucs(graph32, 'AF3', 'CP6')
+    res = TreeNode.ucs(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.ucs(graph32, 'F8', 'CP2')
+    res = TreeNode.ucs(graph32A, 'F8', 'CP2')
     print(res)
 
     '''
@@ -595,33 +834,46 @@ def main():
     '''
     print('\n---Floyd - Marshall---\n')
     # F7 - PO4
-    res = TreeNode.floyd_marshall(graph32, 'F7', 'PO4')
+    res = TreeNode.floyd_marshall(graph32A, 'F7', 'PO4')
     print(res)
     # CP5 - O2
-    res = TreeNode.floyd_marshall(graph32, 'CP5', 'O2')
+    res = TreeNode.floyd_marshall(graph32A, 'CP5', 'O2')
     print(res)
     # P4 - T7
-    res = TreeNode.floyd_marshall(graph32, 'P4', 'T7')
+    res = TreeNode.floyd_marshall(graph32A, 'P4', 'T7')
     print(res)
     # AF3 - CP6
-    res = TreeNode.floyd_marshall(graph32, 'AF3', 'CP6')
+    res = TreeNode.floyd_marshall(graph32A, 'AF3', 'CP6')
     print(res)
     # F8 - CP2
-    res = TreeNode.floyd_marshall(graph32, 'F8', 'CP2')
+    res = TreeNode.floyd_marshall(graph32A, 'F8', 'CP2')
     print(res)
 
     print('\n')
     # Parte 3----------------------------------------------------------------------------------------
-    # graph8.print_graph()
-    prim_selected_vertices, prim_min_spanning_tree_cost = graph8.prim()
-    print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
-    print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
-    print("\n")
-    # graph32.print_graph()
-    prim_selected_vertices, prim_min_spanning_tree_cost = graph32.prim()
-    print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
-    print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    # graph8_4.print_graph()
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_4.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_4.kruskal()
 
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_4, kruskal_selected_edges)
+
+    # graph32A.print_graph()
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32A.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32A.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32A, kruskal_selected_edges)
 
 if __name__ == "__main__":
     main()
