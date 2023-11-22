@@ -1345,7 +1345,7 @@ def main():
 
     print('\n')
     # Parte 3----------------------------------------------------------------------------------------
-    '''
+
     # Sujeto 3--------------------------------------------------------------------------------------
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8_3_1.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_3_1.kruskal()
@@ -1545,11 +1545,10 @@ def main():
     print("\n")
     plotMinSpanningTree(graph32B_3, kruskal_selected_edges)
     # --------------------------------------------------------------------------------------
-    '''
 
     # Part 4 ------------------------------------------
     # Convex hull
-    """
+
     # Sujeto 3--------------------------------------------------------------------------------------
     prim_edges, _ = graph8_3_1.prim_edges()
     plotConvexHull(prim_edges, posiciones8)
@@ -1582,7 +1581,7 @@ def main():
     prim_edges, _ = graph8_5_3.prim_edges()
     plotConvexHull(prim_edges, posiciones8)
     # --------------------------------------------------------------------------------------
-    """
+
     # Sujeto 6--------------------------------------------------------------------------------------
     prim_edges, _ = graph8_6_1.prim_edges()
     plotConvexHull(prim_edges, posiciones8)
