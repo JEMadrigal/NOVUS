@@ -622,10 +622,10 @@ def main():
     matrizMemoriaSujeto6 = np.loadtxt('S6/Memoria.txt')
     matrizOperacionesSujeto6 = np.loadtxt('S6/Operaciones.txt')
 
-    #plotMatrices8(matrizLecturaSujeto3, matrizMemoriaSujeto3, matrizOperacionesSujeto3)
-    #plotMatrices8(matrizLecturaSujeto4, matrizMemoriaSujeto4, matrizOperacionesSujeto4)
-    #plotMatrices8(matrizLecturaSujeto5, matrizMemoriaSujeto5, matrizOperacionesSujeto5)
-    #plotMatrices8(matrizLecturaSujeto6, matrizMemoriaSujeto6, matrizOperacionesSujeto6)
+    plotMatrices8(matrizLecturaSujeto3, matrizMemoriaSujeto3, matrizOperacionesSujeto3)
+    plotMatrices8(matrizLecturaSujeto4, matrizMemoriaSujeto4, matrizOperacionesSujeto4)
+    plotMatrices8(matrizLecturaSujeto5, matrizMemoriaSujeto5, matrizOperacionesSujeto5)
+    plotMatrices8(matrizLecturaSujeto6, matrizMemoriaSujeto6, matrizOperacionesSujeto6)
 
     posiciones8 = {
         'Fz': (0, 0.71934, 0.694658),
@@ -1266,8 +1266,8 @@ def main():
     matrizMemoria32B = np.loadtxt('S0B/Memoria.txt')
     matrizOperaciones32B = np.loadtxt('S0B/Operaciones.txt')
 
-    # plotMatrices32(matrizLectura32A, matrizMemoria32A, matrizOperaciones32A)
-    # plotMatrices32(matrizLectura32B, matrizMemoria32B, matrizOperaciones32B)
+    plotMatrices32(matrizLectura32A, matrizMemoria32A, matrizOperaciones32A)
+    plotMatrices32(matrizLectura32B, matrizMemoria32B, matrizOperaciones32B)
 
     posiciones32 = {
         'Fp1': (-0.308829, 0.950477, -0.0348995),
@@ -1892,7 +1892,6 @@ def main():
     plotMinSpanningTree(graph32B_3, kruskal_selected_edges)
     # --------------------------------------------------------------------------------------
 
-    '''
     # Part 4 ------------------------------------------
     # Convex hull
 
@@ -1940,10 +1939,26 @@ def main():
     plotConvexHull(prim_edges, posiciones8)
     # --------------------------------------------------------------------------------------
 
+    # S0A --------------------------------------------------------------------------------------
     prim_edges, _ = graph32A_1.prim_edges()
     plotConvexHull(prim_edges, posiciones32)
 
-    '''
+    prim_edges, _ = graph32A_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
+
+    prim_edges, _ = graph32A_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
+
+    # S0B --------------------------------------------------------------------------------------
+    prim_edges, _ = graph32B_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
+
+    prim_edges, _ = graph32B_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
+
+    prim_edges, _ = graph32B_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
+
 
 
 if __name__ == "__main__":
