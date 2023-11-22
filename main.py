@@ -398,11 +398,10 @@ class TreeNode:
 
     def bfs(graph, v0, vg):
         if v0 not in graph.vertices():
-            print("El vertice", v0, "no existe")
-            return None
+            return "El vertice", v0, "no existe"
         if vg not in graph.vertices():
-            print("El vertice", vg, "no existe")
-            return None
+            return "El vertice", vg, "no existe"
+
 
         frontier = Queue()
         start_node = TreeNode(None, v0, 0)
@@ -421,14 +420,13 @@ class TreeNode:
                     new_node = TreeNode(node, vertex, cost + node.c)
                     frontier.put(new_node)
 
-        print("No se encontró un camino hasta el nodo", vg)
-        return None
+        return "No se encontró un camino hasta el nodo", vg
 
     def dfs(graph, v0, vg):
         if v0 not in graph.vertices():
-            print("El vertice", v0, "no existe")
+            return "El vertice", v0, "no existe"
         if vg not in graph.vertices():
-            print("El vertice", vg, "no existe")
+            return "El vertice", vg, "no existe"
 
         frontier = LifoQueue()
         frontier.put(TreeNode(None, v0, 0))
@@ -448,9 +446,9 @@ class TreeNode:
 
     def ucs(graph, v0, vg):
         if v0 not in graph.vertices():
-            print("El vertice", v0, "no existe")
+            return "El vertice", v0, "no existe"
         if vg not in graph.vertices():
-            print("El vertice", vg, "no existe")
+            return "El vertice", vg, "no existe"
         frontier = PriorityQueue()
         frontier.put((0, TreeNode(None, v0, 0)))
         explored_set = {}
@@ -465,17 +463,15 @@ class TreeNode:
                 adjacent_vertices = graph.adjacent_vertices(node.v)
                 for vertex in adjacent_vertices:
                     cost = vertex[1] + node.c
-                    frontier.put(
-                        (cost, TreeNode(node, vertex[0], vertex[1] + node.c)))
+                    frontier.put((cost, TreeNode(node, vertex[0], vertex[1] + node.c)))
             explored_set[node.v] = 0
 
     def floyd_marshall(self, start_vertex, end_vertex):
         vertices = self.vertices()
 
         if start_vertex not in vertices:
-            print(f"The start vertex {start_vertex} is not in the list of vertices.")
-            return None
-
+           return f"The start vertex {start_vertex} is not in the list of vertices."
+        
         n = len(vertices)
         distance = [[float('inf')] * n for _ in range(n)]
         next_node = [[-1] * n for _ in range(n)]
@@ -497,8 +493,7 @@ class TreeNode:
             start_index = vertices.index(start_vertex)
             end_index = vertices.index(end_vertex)
         except ValueError as e:
-            print(f"The vertex {e.args[0]} is not in the list of vertices.")
-            return None
+            return f"The vertex {e.args[0]} is not in the list of vertices."
 
         shortest_distance = distance[start_index][end_index]
 
@@ -821,13 +816,23 @@ def main():
     # C3 - Oz
     print('\nC3 - Oz\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph8_3_1, 'C3', 'Oz'))
-    print('Matriz Memoria: ', TreeNode.bfs(graph8_3_2, 'C3', 'Oz'))
-    print('Matriz Operaciones: ', TreeNode.bfs(graph8_3_3, 'C3', 'Oz'))
+    print('Matriz Memoria: ',TreeNode.bfs(graph8_3_2, 'C3', 'Oz'))
+    print('Matriz Operaciones: ',TreeNode.bfs(graph8_3_3, 'C3', 'Oz'))
     # P07 - C4
     print('\nP07 - C4\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph8_3_1, 'C3', 'Oz'))
     print('Matriz Memoria: ', TreeNode.bfs(graph8_3_2, 'C3', 'Oz'))
-    print(TreeNode.bfs(graph8_3_3, 'C3', 'Oz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_3_3, 'C3', 'Oz'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_3_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_3_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_3_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_3_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_3_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_3_3, 'P07', 'Fz'))
 
     print('\nSujeto 4:\n')
     # Fz - PO8
@@ -845,10 +850,20 @@ def main():
     print('Matriz Lectura: ', TreeNode.bfs(graph8_4_1, 'C3', 'Oz'))
     print('Matriz Memoria: ', TreeNode.bfs(graph8_4_2, 'C3', 'Oz'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph8_4_3, 'C3', 'Oz'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_4_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_4_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_4_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - C4\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_4_1, 'P07', 'C4'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_4_2, 'P07', 'C4'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_4_3, 'P07', 'C4'))
 
     print('\nSujeto 5:\n')
-    print('\nFz - PO8\n')
     # Fz - PO8
+    print('\nFz - PO8\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph8_5_1, 'Fz', 'PO8'))
     print('Matriz Memoria: ', TreeNode.bfs(graph8_5_2, 'Fz', 'PO8'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph8_5_3, 'Fz', 'PO8'))
@@ -858,9 +873,20 @@ def main():
     print('Matriz Memoria: ', TreeNode.bfs(graph8_5_2, 'C3', 'Oz'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph8_5_3, 'C3', 'Oz'))
     # P07 - C4
+    print('\nP07 - C4\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph8_5_1, 'C3', 'Oz'))
-    print(TreeNode.bfs(graph8_5_2, 'C3', 'Oz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_5_2, 'C3', 'Oz'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph8_5_3, 'C3', 'Oz'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_5_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_5_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_5_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_5_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_5_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_5_3, 'P07', 'Fz'))
 
     print('\nSujeto 6:\n')
     # Fz - PO8
@@ -877,16 +903,26 @@ def main():
     print('Matriz Lectura: ', TreeNode.bfs(graph8_6_1, 'C3', 'Oz'))
     print('Matriz Memoria: ', TreeNode.bfs(graph8_6_2, 'C3', 'Oz'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph8_6_3, 'C3', 'Oz'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_6_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_6_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_6_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph8_6_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph8_6_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph8_6_3, 'P07', 'Fz'))
 
     '''
         DFS:
     '''
     print('\n---DFS---\n')
     print('\nSujeto 3:\n')
-    # Fz - PO8
+    # Fz - PO8    
     print('\nFz - PO8\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph8_3_1, 'Fz', 'PO8'))
-    print('Matriz Memoria: ', TreeNode.dfs(graph8_3_2, 'Fz', 'PO8'))
+    print('Matriz Memoria: ',TreeNode.dfs(graph8_3_2, 'Fz', 'PO8'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_3_3, 'Fz', 'PO8'))
     # C3 - Oz
     print('\nC3 - Oz\n')
@@ -898,9 +934,19 @@ def main():
     print('Matriz Lectura: ', TreeNode.dfs(graph8_3_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_3_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_3_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_3_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_3_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_3_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_3_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_3_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_3_3, 'P07', 'Fz'))
 
     print('\nSujeto 4:\n')
-    # Fz - PO8
+    # Fz - PO8    
     print('\nFz - PO8\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph8_4_1, 'Fz', 'PO8'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_4_2, 'Fz', 'PO8'))
@@ -915,9 +961,19 @@ def main():
     print('Matriz Lectura: ', TreeNode.dfs(graph8_4_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_4_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_4_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_4_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_4_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_4_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_4_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_4_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_4_3, 'P07', 'Fz'))
 
     print('\nSujeto 5:\n')
-    # Fz - PO8
+    # Fz - PO8    
     print('\nFz - PO8\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph8_5_1, 'Fz', 'PO8'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_5_2, 'Fz', 'PO8'))
@@ -932,10 +988,20 @@ def main():
     print('Matriz Lectura: ', TreeNode.dfs(graph8_5_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_5_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_5_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_5_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_5_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_5_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_5_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_5_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_5_3, 'P07', 'Fz'))
 
     print('\nSujeto 6:\n')
-    # Fz - PO8
-    print('\nFz - PO8\n')
+    # Fz - PO8  
+    print('\nFz - PO8\n')  
     print('Matriz Lectura: ', TreeNode.dfs(graph8_6_1, 'Fz', 'PO8'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_6_2, 'Fz', 'PO8'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_6_3, 'Fz', 'PO8'))
@@ -949,6 +1015,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.dfs(graph8_6_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.dfs(graph8_6_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph8_6_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_6_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_6_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_6_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph8_6_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph8_6_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph8_6_3, 'P07', 'Fz'))
 
     '''
         UCS:
@@ -970,6 +1046,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.ucs(graph8_3_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.ucs(graph8_3_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.ucs(graph8_3_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_3_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_3_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_3_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_3_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_3_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_3_3, 'P07', 'Fz'))
 
     print('\nSujeto 4:\n')
     # Fz - PO8
@@ -987,6 +1073,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.ucs(graph8_4_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.ucs(graph8_4_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.ucs(graph8_4_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_4_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_4_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_4_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_4_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_4_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_4_3, 'P07', 'Fz'))
 
     print('\nSujeto 5:\n')
     # Fz - PO8
@@ -1004,6 +1100,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.ucs(graph8_5_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.ucs(graph8_5_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.ucs(graph8_5_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_5_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_5_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_5_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_5_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_5_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_5_3, 'P07', 'Fz'))
 
     print('\nSujeto 6:\n')
     # Fz - PO8
@@ -1021,6 +1127,17 @@ def main():
     print('Matriz Lectura: ', TreeNode.ucs(graph8_6_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.ucs(graph8_6_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.ucs(graph8_6_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_6_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_6_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_6_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph8_6_1, 'P07', 'C4'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph8_6_2, 'P07', 'C4'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph8_6_3, 'P07', 'C4'))
+
     '''
         Floyd - Marshall:
     '''
@@ -1041,6 +1158,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_3_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_3_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_3_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOzP08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_3_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_3_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_3_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_3_1, 'P07', 'C4'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_3_2, 'P07', 'C4'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_3_3, 'P07', 'C4'))
 
     print('\nSujeto 4:\n')
     # Fz - PO8
@@ -1055,6 +1182,16 @@ def main():
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_4_3, 'C3', 'Oz'))
     # P07 - C4
     print('\nP07 - C4\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_4_1, 'P07', 'C4'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_4_2, 'P07', 'C4'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_4_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_4_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_4_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_4_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_4_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_4_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_4_3, 'P07', 'C4'))
@@ -1075,6 +1212,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_5_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_5_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_5_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_5_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_5_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_5_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_5_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_5_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_5_3, 'P07', 'Fz'))
 
     print('\nSujeto 6:\n')
     # Fz - PO8
@@ -1092,6 +1239,16 @@ def main():
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_6_1, 'P07', 'C4'))
     print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_6_2, 'P07', 'C4'))
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_6_3, 'P07', 'C4'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_6_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_6_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_6_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph8_6_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph8_6_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph8_6_3, 'P07', 'Fz'))
 
     '''
         32 electrodos:
@@ -1234,32 +1391,84 @@ def main():
         BFS:
     '''
     print('\n---BFS---\n')
+    print('\nS0A\n')
     # F7 - PO4
     print('\nF7 - PO4\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'F7', 'PO4'))
     print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'F7', 'PO4'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'F7', 'PO4'))
     # CP5 - O2
+    print('\nCP5 - O2\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'CP5', 'O2'))
     print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'CP5', 'O2'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'CP5', 'O2'))
     # P4 - T7
+    print('\nP4 - T7\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'P4', 'T7'))
     print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'P4', 'T7'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'P4', 'T7'))
     # AF3 - CP6
+    print('\nAF3 - CP6\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'AF3', 'CP6'))
     print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'AF3', 'CP6'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'AF3', 'CP6'))
     # F8 - CP2
+    print('\nF8 - CP2\n')
     print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'F8', 'CP2'))
     print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'F8', 'CP2'))
     print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32A_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32A_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32A_3, 'P07', 'Fz'))
 
+    print('\nS0B\n')
+    # F7 - PO4
+    print('\nF7 - PO4\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'F7', 'PO4'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'F7', 'PO4'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'F7', 'PO4'))
+    # CP5 - O2
+    print('\nCP5 - O2\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'CP5', 'O2'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'CP5', 'O2'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'CP5', 'O2'))
+    # P4 - T7
+    print('\nP4 - T7\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'P4', 'T7'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'P4', 'T7'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'P4', 'T7'))
+    # AF3 - CP6
+    print('\nAF3 - CP6\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'AF3', 'CP6'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'AF3', 'CP6'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'AF3', 'CP6'))
+    # F8 - CP2
+    print('\nF8 - CP2\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'F8', 'CP2'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'F8', 'CP2'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.bfs(graph32B_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.bfs(graph32B_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.bfs(graph32B_3, 'P07', 'Fz'))
     '''
         DFS:
     '''
     print('\n---DFS---\n')
+    print('\nS0A\n')
     # F7 - PO4
     print('\nF7 - PO4\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'F7', 'PO4'))
@@ -1271,22 +1480,72 @@ def main():
     print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'CP5', 'O2'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'CP5', 'O2'))
     # P4 - T7
+    print('\nP4 - T7\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'P4', 'T7'))
     print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'P4', 'T7'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'P4', 'T7'))
     # AF3 - CP6
+    print('\nAF3 - CP6\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'AF3', 'CP6'))
     print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'AF3', 'CP6'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'AF3', 'CP6'))
     # F8 - CP2
+    print('\nF8 - CP2\n')
     print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'F8', 'CP2'))
     print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'F8', 'CP2'))
     print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32A_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32A_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32A_3, 'P07', 'Fz'))
+    print('\nS0B\n')
+    # F7 - PO4
+    print('\nF7 - PO4\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'F7', 'PO4'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'F7', 'PO4'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'F7', 'PO4'))
+    # CP5 - O2
+    print('\nCP5 - O2\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'CP5', 'O2'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'CP5', 'O2'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'CP5', 'O2'))
+    # P4 - T7
+    print('\nP4 - T7\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'P4', 'T7'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'P4', 'T7'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'P4', 'T7'))
+    # AF3 - CP6
+    print('\nAF3 - CP6\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'AF3', 'CP6'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'AF3', 'CP6'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'AF3', 'CP6'))
+    # F8 - CP2
+    print('\nF8 - CP2\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'F8', 'CP2'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'F8', 'CP2'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.dfs(graph32B_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.dfs(graph32B_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.dfs(graph32B_3, 'P07', 'Fz'))
 
     '''
         UCS:
     '''
     print('\n---UCS---\n')
+    print('\nS0A\n')
     # F7 - PO4
     print('\nF7 - PO4\n')
     print('Matriz Lectura: ', TreeNode.ucs(graph32A_1, 'F7', 'PO4'))
@@ -1312,11 +1571,58 @@ def main():
     print('Matriz Lectura: ', TreeNode.ucs(graph32A_1, 'F8', 'CP2'))
     print('Matriz Memoria: ', TreeNode.ucs(graph32A_2, 'F8', 'CP2'))
     print('Matriz Operaciones: ', TreeNode.ucs(graph32A_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32A_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32A_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32A_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32A_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32A_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32A_3, 'P07', 'Fz'))
+    print('\nS0B\n')
+    # F7 - PO4
+    print('\nF7 - PO4\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'F7', 'PO4'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'F7', 'PO4'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'F7', 'PO4'))
+    # CP5 - O2
+    print('\nCP5 - O2\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'CP5', 'O2'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'CP5', 'O2'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'CP5', 'O2'))
+    # P4 - T7
+    print('\nP4 - T7\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'P4', 'T7'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'P4', 'T7'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'P4', 'T7'))
+    # AF3 - CP6
+    print('\nAF3 - CP6\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'AF3', 'CP6'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'AF3', 'CP6'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'AF3', 'CP6'))
+    # F8 - CP2
+    print('\nF8 - CP2\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'F8', 'CP2'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'F8', 'CP2'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.ucs(graph32B_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.ucs(graph32B_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.ucs(graph32B_3, 'P07', 'Fz'))
 
     '''
         Floyd - Marshall:
     '''
     print('\n---Floyd - Marshall---\n')
+    print('\nS0A\n')
     # F7 - PO4
     print('\nF7 - PO4\n')
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32A_1, 'F7', 'PO4'))
@@ -1342,10 +1648,55 @@ def main():
     print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32A_1, 'F8', 'CP2'))
     print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32A_2, 'F8', 'CP2'))
     print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32A_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32A_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32A_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32A_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32A_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32A_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32A_3, 'P07', 'Fz'))
+    print('\nS0B\n')
+    # F7 - PO4
+    print('\nF7 - PO4\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'F7', 'PO4'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'F7', 'PO4'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'F7', 'PO4'))
+    # CP5 - O2
+    print('\nCP5 - O2\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'CP5', 'O2'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'CP5', 'O2'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'CP5', 'O2'))
+    # P4 - T7
+    print('\nP4 - T7\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'P4', 'T7'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'P4', 'T7'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'P4', 'T7'))
+    # AF3 - CP6
+    print('\nAF3 - CP6\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'AF3', 'CP6'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'AF3', 'CP6'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'AF3', 'CP6'))
+    # F8 - CP2
+    print('\nF8 - CP2\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'F8', 'CP2'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'F8', 'CP2'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'F8', 'CP2'))
+    # Oz - P08
+    print('\nOz - P08\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'Oz', 'P08'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'Oz', 'P08'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'Oz', 'P08'))
+    # P07 - Fz
+    print('\nP07 - Fz\n')
+    print('Matriz Lectura: ', TreeNode.floyd_marshall(graph32B_1, 'P07', 'Fz'))
+    print('Matriz Memoria: ', TreeNode.floyd_marshall(graph32B_2, 'P07', 'Fz'))
+    print('Matriz Operaciones: ', TreeNode.floyd_marshall(graph32B_3, 'P07', 'Fz'))
 
     print('\n')
     # Parte 3----------------------------------------------------------------------------------------
-
     # Sujeto 3--------------------------------------------------------------------------------------
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8_3_1.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_3_1.kruskal()
@@ -1545,6 +1896,7 @@ def main():
     print("\n")
     plotMinSpanningTree(graph32B_3, kruskal_selected_edges)
     # --------------------------------------------------------------------------------------
+
 
     # Part 4 ------------------------------------------
     # Convex hull
