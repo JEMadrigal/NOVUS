@@ -564,6 +564,42 @@ def plotMatrices32(matrizLectura, matrizMemoria, matrizOperaciones):
     InitialGraph.plot32(matrizOperaciones)
 
 
+def plotConvexHull(prim_edges, posiciones8):
+    unique_points = set()
+    for edge in prim_edges:
+        unique_points.add(edge[0])
+        unique_points.add(edge[1])
+    unique_points = list(unique_points)
+
+    points_3d = [posiciones8[point] for point in unique_points]
+
+    convex_hull = graham_scan(points_3d)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    for point in points_3d:
+        ax.scatter(point[0], point[1], point[2], c='blue', marker='o')
+
+    # edges of the minimum spanning tree.
+    for edge in prim_edges:
+        start_point = posiciones8[edge[0]]
+        end_point = posiciones8[edge[1]]
+        ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], [start_point[2], end_point[2]],
+                c='green', linestyle='--')
+
+    convex_hull.append(convex_hull[0])  # Para cerrar el casco convexo.
+    convex_hull_points = np.array(convex_hull)
+    ax.plot(convex_hull_points[:, 0], convex_hull_points[:, 1], convex_hull_points[:, 2], c='red', linestyle='-',
+            linewidth=2)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+
+    plt.show()
+
+
 def main():
     '''
         8 electrodos:
@@ -1513,41 +1549,53 @@ def main():
 
     # Part 4 ------------------------------------------
     # Convex hull
+    """
+    # Sujeto 3--------------------------------------------------------------------------------------
     prim_edges, _ = graph8_3_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    unique_points = set()
-    for edge in prim_edges:
-        unique_points.add(edge[0])
-        unique_points.add(edge[1])
-    unique_points = list(unique_points)
+    prim_edges, _ = graph8_3_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    points_3d = [posiciones8[point] for point in unique_points]
+    prim_edges, _ = graph8_3_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
+    # --------------------------------------------------------------------------------------
 
-    convex_hull = graham_scan(points_3d)
+    # Sujeto 4--------------------------------------------------------------------------------------
+    prim_edges, _ = graph8_4_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    prim_edges, _ = graph8_4_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    for point in points_3d:
-        ax.scatter(point[0], point[1], point[2], c='blue', marker='o')
+    prim_edges, _ = graph8_4_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
+    # --------------------------------------------------------------------------------------
 
-    # edges of the minimum spanning tree.
-    for edge in prim_edges:
-        start_point = posiciones8[edge[0]]
-        end_point = posiciones8[edge[1]]
-        ax.plot([start_point[0], end_point[0]], [start_point[1], end_point[1]], [start_point[2], end_point[2]],
-                c='green', linestyle='--')
+    # Sujeto 5--------------------------------------------------------------------------------------
+    prim_edges, _ = graph8_5_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    convex_hull.append(convex_hull[0])  # Para cerrar el casco convexo.
-    convex_hull_points = np.array(convex_hull)
-    ax.plot(convex_hull_points[:, 0], convex_hull_points[:, 1], convex_hull_points[:, 2], c='red', linestyle='-',
-            linewidth=2)
+    prim_edges, _ = graph8_5_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
+    prim_edges, _ = graph8_5_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
+    # --------------------------------------------------------------------------------------
+    """
+    # Sujeto 6--------------------------------------------------------------------------------------
+    prim_edges, _ = graph8_6_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
 
-    plt.show()
+    prim_edges, _ = graph8_6_2.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
+
+    prim_edges, _ = graph8_6_3.prim_edges()
+    plotConvexHull(prim_edges, posiciones8)
+    # --------------------------------------------------------------------------------------
+
+    prim_edges, _ = graph32A_1.prim_edges()
+    plotConvexHull(prim_edges, posiciones32)
 
 
 if __name__ == "__main__":
