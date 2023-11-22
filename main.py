@@ -7,17 +7,18 @@ from matplotlib.colors import Normalize
 from matplotlib import cm
 import networkx as nx
 
-#NOMBRES GRAFOS:
 
-#8 ELECTRODOS:
-    #graph8_3
-    #graph8_4
-    #graph8_5
-    #graph8_6
+# NOMBRES GRAFOS:
 
-#32 ELECTRODOS:
-    #graph32A
-    #graph32B
+# 8 ELECTRODOS:
+# graph8_3
+# graph8_4
+# graph8_5
+# graph8_6
+
+# 32 ELECTRODOS:
+# graph32A
+# graph32B
 
 class DisjointSet:
     def __init__(self, vertices):
@@ -50,7 +51,6 @@ class InitialGraph:
         distancia = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
         return distancia
 
-
     def calculate_angle(v1, v2):
         dot_product = np.dot(v1, v2)
         norm_v1 = np.linalg.norm(v1)
@@ -80,7 +80,8 @@ class InitialGraph:
 
         # Circumcircles for the corresponding region
         for i, color in enumerate(num_edges):
-            plt.scatter(vor.vertices[i, 0], vor.vertices[i, 1], c=[cmap.to_rgba(color)], edgecolors='k', s=50, zorder=10)
+            plt.scatter(vor.vertices[i, 0], vor.vertices[i, 1], c=[cmap.to_rgba(color)], edgecolors='k', s=50,
+                        zorder=10)
 
         plt.colorbar(cmap, label='Number of Edges')
         plt.xlim(min(points2D[:, 0]) - 1, max(points2D[:, 0]) + 1)
@@ -104,7 +105,7 @@ class InitialGraph:
         y = r * points3D[:, 1]
         points2D = np.column_stack((x, y))
 
-        #InitialGraph.plot_voronoi(points2D, adjacency_matrix)
+        # InitialGraph.plot_voronoi(points2D, adjacency_matrix)
 
         circle = plt.Circle((0, 0), 1, color='r', alpha=0.25, fill=False)
         plt.scatter(points2D[:, 0], points2D[:, 1])
@@ -117,7 +118,7 @@ class InitialGraph:
             for j in range(i + 1, len(adjacency_matrix[i])):
                 if adjacency_matrix[i, j] == 1:
                     plt.plot([points2D[i, 0], points2D[j, 0]], [
-                             points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                        points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
 
                     vector1 = points2D[j] - points2D[i]
                     vector2 = np.array([1, 0])
@@ -145,9 +146,9 @@ class InitialGraph:
                     [-0.71934, 0, 0.694658], [0, 0, 1], [0.71934,
                                                          0, 0.694658], [0.999391, 0, -0.0348995],
                     [-0.887888, -0.340828, 0.309017], [-0.37471, -
-                                                       0.37471, 0.848048], [0.37471, -0.37471, 0.848048],
+            0.37471, 0.848048], [0.37471, -0.37471, 0.848048],
                     [0.887888, -0.340828, 0.309017], [-0.808524, -
-                                                      0.587427, -0.0348995], [-0.545007, -0.673028, 0.5],
+            0.587427, -0.0348995], [-0.545007, -0.673028, 0.5],
                     [0, -0.71934, 0.694658], [0.545007, -0.673028,
                                               0.5], [0.808524, -0.587427, -0.0348995],
                     [-0.406247, -0.871199, 0.275637], [0.406247, -0.871199, 0.275637],
@@ -160,7 +161,7 @@ class InitialGraph:
         x = r * points3D[:, 0]
         y = r * points3D[:, 1]
         points2D = np.column_stack((x, y))
-        #InitialGraph.plot_voronoi(points2D, adjacency_matrix)
+        # InitialGraph.plot_voronoi(points2D, adjacency_matrix)
 
         circle = plt.Circle((0, 0), 1, color='r', alpha=0.25, fill=False)
         plt.scatter(points2D[:, 0], points2D[:, 1])
@@ -174,7 +175,7 @@ class InitialGraph:
             for j in range(i + 1, len(adjacency_matrix[i])):
                 if adjacency_matrix[i, j] == 1:
                     plt.plot([points2D[i, 0], points2D[j, 0]], [
-                             points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
+                        points2D[i, 1], points2D[j, 1]], 'k-', alpha=0.5)
 
                     vector1 = points2D[j] - points2D[i]
                     vector2 = np.array([1, 0])
@@ -337,12 +338,14 @@ class TreeNode:
         start_node = TreeNode(None, v0, 0)
         frontier.put(start_node)
 
+        visited = set()
+
         while not frontier.empty():
             node = frontier.get()
             if node.v == vg:
                 return {"Path": node.path(), "Cost": node.c}
-            if not node.visited:
-                node.visited = True
+            if node.v not in visited:
+                visited.add(node.v)
                 adjacent_vertices = graph.adjacent_vertices(node.v)
                 for vertex, cost in adjacent_vertices:
                     new_node = TreeNode(node, vertex, cost + node.c)
@@ -400,8 +403,7 @@ class TreeNode:
         vertices = self.vertices()
 
         if start_vertex not in vertices:
-            print(
-                f"The start vertex {start_vertex} is not in the list of vertices.")
+            print(f"The start vertex {start_vertex} is not in the list of vertices.")
             return None
 
         n = len(vertices)
@@ -409,19 +411,26 @@ class TreeNode:
         next_node = [[-1] * n for _ in range(n)]
 
         for i in range(n):
-            distance[i][i] = 0
             for edge in self._adjacency_list[vertices[i]]:
-                distance[i][vertices.index(edge[0])] = edge[1]
-                next_node[i][vertices.index(edge[0])] = vertices.index(edge[0])
+                neighbor_index = vertices.index(edge[0])
+                distance[i][neighbor_index] = edge[1]
+                next_node[i][neighbor_index] = neighbor_index
+
+        for k in range(n):
+            for i in range(n):
+                for j in range(n):
+                    if distance[i][j] > distance[i][k] + distance[k][j]:
+                        distance[i][j] = distance[i][k] + distance[k][j]
+                        next_node[i][j] = next_node[i][k]
 
         try:
+            start_index = vertices.index(start_vertex)
             end_index = vertices.index(end_vertex)
-        except ValueError:
-            print(
-                f"The end vertex {end_vertex} is not in the list of vertices.")
+        except ValueError as e:
+            print(f"The vertex {e.args[0]} is not in the list of vertices.")
             return None
 
-        shortest_distance = distance[vertices.index(start_vertex)][end_index]
+        shortest_distance = distance[start_index][end_index]
 
         return shortest_distance
 
@@ -477,6 +486,7 @@ def plotMatrices8(matrizLectura, matrizMemoria, matrizOperaciones):
     InitialGraph.plot8(matrizLectura)
     InitialGraph.plot8(matrizMemoria)
     InitialGraph.plot8(matrizOperaciones)
+
 
 def plotMatrices32(matrizLectura, matrizMemoria, matrizOperaciones):
     InitialGraph.plot32(matrizLectura)
@@ -1229,7 +1239,32 @@ def main():
 
     print('\n')
     # Parte 3----------------------------------------------------------------------------------------
-    # graph8_4_1_1.print_graph()
+
+    # Sujeto 3--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_3_1.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_3_1.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_3_1, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_3_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_3_2.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_3_2, kruskal_selected_edges)
+    # -----------------------------------------------------------------------------------------------
+
+    # Sujeto 4--------------------------------------------------------------------------------------
     prim_selected_vertices, prim_min_spanning_tree_cost = graph8_4_1.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_4_1.kruskal()
 
@@ -1241,7 +1276,93 @@ def main():
     print("\n")
     plotMinSpanningTree(graph8_4_1, kruskal_selected_edges)
 
-    # graph32A_1.print_graph()
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_4_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_4_2.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_4_2, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_4_3.prim()
+    plotMinSpanningTree(graph8_4_3, kruskal_selected_edges)
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_4_3, kruskal_selected_edges)
+    # -----------------------------------------------------------------------------------------------
+
+    # Sujeto 5--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_5_1.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_5_1.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_5_1, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_5_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_5_2.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_5_2, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_5_3.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_5_3.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_5_3, kruskal_selected_edges)
+    # -----------------------------------------------------------------------------------------------
+
+    # Sujeto 6--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_6_1.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_6_1.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_6_1, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_6_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_6_2.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_6_2, kruskal_selected_edges)
+
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph8_6_3.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph8_6_3.kruskal()
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph8_6_3, kruskal_selected_edges)
+    # -----------------------------------------------------------------------------------------------
+
+    # 32 A graph 1--------------------------------------------------------------------------------------
     prim_selected_vertices, prim_min_spanning_tree_cost = graph32A_1.prim()
     kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32A_1.kruskal()
 
@@ -1252,6 +1373,72 @@ def main():
     print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
     print("\n")
     plotMinSpanningTree(graph32A_1, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
+
+    # 32 A graph 2--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32A_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32A_2.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32A_2, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
+
+    # 32 A graph 3--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32A_3.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32A_3.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32A_3, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
+
+    # 32 B graph 1--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32B_1.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32B_1.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32B_1, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
+
+    # 32 B graph 2--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32B_2.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32B_2.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32B_2, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
+
+    # 32 B graph 3--------------------------------------------------------------------------------------
+    prim_selected_vertices, prim_min_spanning_tree_cost = graph32B_3.prim()
+    kruskal_selected_edges, kruskal_min_spanning_tree_cost = graph32B_3.kruskal()
+
+    # print("Prim's Minimum Spanning Tree Vertices:", prim_selected_vertices)
+    # print("Prim's Minimum Spanning Tree Cost:", prim_min_spanning_tree_cost)
+    print("\n")
+    print("Kruskal's Minimum Spanning Tree Edges:", kruskal_selected_edges)
+    print("Kruskal's Minimum Spanning Tree Cost:", kruskal_min_spanning_tree_cost)
+    print("\n")
+    plotMinSpanningTree(graph32B_3, kruskal_selected_edges)
+    # --------------------------------------------------------------------------------------
 
 
 if __name__ == "__main__":
